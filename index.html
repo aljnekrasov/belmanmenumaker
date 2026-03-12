@@ -26,29 +26,53 @@
       const maxRadius = 1480;
       const radiusStep = 60;
 
-      const lines = [
-        "— — — — —",
-        "— — — — —",
-        "radius",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —",
-        "— — — — —"
+      const maxLineLength = 35;
+      const rawMenuLines = [
+        "Курс 0",
+        "Стартер",
+        "Огород и дзадзыки",
+        "Курс 1",
+        "Пино Гриджио",
+        "Севиче из гребешка с тигриным молоком и сезонными фруктами",
+        "Курс 2",
+        "Рислинг",
+        "Галантин из рапаны со спаржей и голубым сыром",
+        "Курс 3",
+        "Санджовезе розе",
+        "Свекольное ризотто с малиной и козьим сыром",
+        "ИЛИ",
+        "Свекольный тарт татен с козьим сыром и травами (мята, чабрец, розмарин)",
+        "Курс 4",
+        "Сира",
+        "Баклажаны пармиджано с мороженым из таледжио и карамелизированным грецким орехом",
+        "антреме - сорбет лимонный/эстрагон/щавель - под сезонность",
+        "Курс 5",
+        "Пино Нуар",
+        "Стейк Торнедо Россини"
       ];
+
+      function splitLongLine(line, maxLength) {
+        if (line.length <= maxLength) return [line];
+
+        const words = line.split(/\s+/);
+        const result = [];
+        let current = "";
+
+        words.forEach((word) => {
+          const candidate = current ? `${current} ${word}` : word;
+          if (candidate.length <= maxLength) {
+            current = candidate;
+          } else {
+            if (current) result.push(current);
+            current = word;
+          }
+        });
+
+        if (current) result.push(current);
+        return result;
+      }
+
+      const lines = rawMenuLines.flatMap((line) => splitLongLine(line, maxLineLength));
 
       const ringDefs = document.getElementById("ring-defs");
       const ringShapes = document.getElementById("ring-shapes");
@@ -69,15 +93,34 @@
       const topCapacity = topRadii.length;
       const topLines = lines.slice(0, topCapacity);
       const innerLines = lines.slice(topCapacity);
-      function getPlacement(lineIndex) {
-        const offsetValue = Math.min(99, 69 + lineIndex);
-        return { offset: `${offsetValue}%`, anchor: "start" };
+      const leftStartX = 0;
+      const searchSamples = 2048;
+
+      function getLeftEdgeOffset(path) {
+        const totalLength = path.getTotalLength();
+        let bestLength = 0;
+        let bestDelta = Number.POSITIVE_INFINITY;
+
+        for (let i = 0; i <= searchSamples; i += 1) {
+          const length = (i / searchSamples) * totalLength;
+          const point = path.getPointAtLength(length);
+
+          // Keep text on the upper half and align as close as possible to sheet's left edge.
+          if (point.y > center.y) continue;
+
+          const delta = Math.abs(point.x - leftStartX);
+          if (delta < bestDelta) {
+            bestDelta = delta;
+            bestLength = length;
+          }
+        }
+
+        return `${bestLength}`;
       }
 
       topLines.forEach((line, index) => {
         const radius = topRadii[index];
         const pathId = `ring-top-${index}`;
-        const placement = getPlacement(index);
 
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("id", pathId);
@@ -86,13 +129,14 @@
           `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
         );
         ringDefs.appendChild(path);
+        const placement = { offset: getLeftEdgeOffset(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line.replace(/•/g, '—');
+        textPath.textContent = line;
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
@@ -100,7 +144,6 @@
       innerLines.forEach((line, index) => {
         const radius = radii[index % radii.length];
         const pathId = `ring-inner-${index}`;
-        const placement = getPlacement(topLines.length + index);
 
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("id", pathId);
@@ -109,13 +152,14 @@
           `M ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y}`
         );
         ringDefs.appendChild(path);
+        const placement = { offset: getLeftEdgeOffset(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line.replace(/•/g, '—');
+        textPath.textContent = line;
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
