@@ -1,0 +1,70 @@
+:root {
+  --page-width: 105mm;
+  --page-height: 297mm;
+  --ink: #151515;
+  --paper: #fbfbfb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #dedede;
+  font-family: "Inter", "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+}
+
+@page {
+  size: 105mm 297mm;
+  margin: 0;
+}
+
+.page {
+  position: relative;
+  width: var(--page-width);
+  min-height: var(--page-height);
+  margin: 0 auto;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.rings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ring-shapes circle {
+  fill: none;
+  stroke: none;
+}
+
+.title-on-ring {
+  fill: #111;
+  font-size: 88px;
+  letter-spacing: 4px;
+  font-style: italic;
+}
+
+.course-on-ring {
+  fill: #222;
+  font-size: 36px;
+  letter-spacing: 0.1px;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  .page {
+    margin: 0;
+  }
+}

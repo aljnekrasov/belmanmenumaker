@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RADIUS — Дегустационное меню</title>
+<style>
+  @page {
+    size: 148.5mm 210mm;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 148.5mm;
+    height: 210mm;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  svg {
+    width: 148.5mm;
+    height: 210mm;
+    display: block;
+  }
+
+  @media screen and (min-width: 1px) {
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background: #e8e8e8;
+    }
+    svg {
+      width: auto;
+      height: 95vh;
+      background: white;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.12);
+    }
+  }
+
+  @media print {
+    html, body {
+      width: 148.5mm;
+      height: 210mm;
+      background: white;
+    }
+    svg {
+      width: 148.5mm;
+      height: 210mm;
+      box-shadow: none;
+      background: white;
+    }
+  }
+</style>
+</head>
+<body>
+
+<svg viewBox="0 0 420 595" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Circular paths, starting from top (12 o'clock), going clockwise -->
+    <path id="r1" d="M 210,249 A 48,48 0 0,1 210,345 A 48,48 0 0,1 210,249" />
+    <path id="r2" d="M 210,229 A 68,68 0 0,1 210,365 A 68,68 0 0,1 210,229" />
+    <path id="r3" d="M 210,209 A 88,88 0 0,1 210,385 A 88,88 0 0,1 210,209" />
+    <path id="r4" d="M 210,185 A 112,112 0 0,1 210,409 A 112,112 0 0,1 210,185" />
+    <path id="r5" d="M 210,165 A 132,132 0 0,1 210,429 A 132,132 0 0,1 210,165" />
+    <path id="r6" d="M 210,143 A 154,154 0 0,1 210,451 A 154,154 0 0,1 210,143" />
+    <path id="r7" d="M 210,119 A 178,178 0 0,1 210,475 A 178,178 0 0,1 210,119" />
+  </defs>
+
+  <!-- Subtle ring lines -->
+  <g opacity="0.15" fill="none" stroke="#000" stroke-width="0.3">
+    <circle cx="210" cy="297" r="48" />
+    <circle cx="210" cy="297" r="68" />
+    <circle cx="210" cy="297" r="88" />
+    <circle cx="210" cy="297" r="112" />
+    <circle cx="210" cy="297" r="132" />
+    <circle cx="210" cy="297" r="154" />
+    <circle cx="210" cy="297" r="178" />
+  </g>
+
+  <!-- Center: RADIUS -->
+  <text x="210" y="295"
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif"
+        font-size="16"
+        letter-spacing="7"
+        fill="#1a1a1a"
+        font-weight="normal">RADIUS</text>
+
+  <!-- Small subtitle -->
+  <text x="210" y="310"
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, 'Times New Roman', serif"
+        font-size="4.5"
+        letter-spacing="2.5"
+        fill="#888"
+        font-weight="normal">ДЕГУСТАЦИОННОЕ МЕНЮ</text>
+
+  <!-- Ring 1: Курс 0 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="6.8" fill="#1a1a1a" letter-spacing="1.2">
+    <textPath href="#r1" startOffset="3%">Курс 0  ·  Стартер  ·  Огород и дзадзыки</textPath>
+  </text>
+
+  <!-- Ring 2: Курс 1 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="6" fill="#1a1a1a" letter-spacing="0.8">
+    <textPath href="#r2" startOffset="8%">Курс 1  ·  Пино Гриджио  ·  Севиче из гребешка с тигриным молоком и сезонными фруктами</textPath>
+  </text>
+
+  <!-- Ring 3: Курс 2 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="6.5" fill="#1a1a1a" letter-spacing="1">
+    <textPath href="#r3" startOffset="15%">Курс 2  ·  Рислинг  ·  Галантин из рапаны со спаржей и голубым сыром</textPath>
+  </text>
+
+  <!-- Ring 4: Курс 3 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="5.5" fill="#1a1a1a" letter-spacing="0.5">
+    <textPath href="#r4" startOffset="5%">Курс 3  ·  Санджовезе розе  ·  Свекольное ризотто с малиной и козьим сыром  или  Свекольный тарт татен с козьим сыром и травами (мята, чабрец, розмарин)</textPath>
+  </text>
+
+  <!-- Ring 5: Антреме -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="6.5" fill="#1a1a1a" letter-spacing="1.5" font-style="italic">
+    <textPath href="#r5" startOffset="12%">Антреме  ·  Сорбет лимонный / эстрагон / щавель  ·  под сезонность</textPath>
+  </text>
+
+  <!-- Ring 6: Курс 4 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="6" fill="#1a1a1a" letter-spacing="0.8">
+    <textPath href="#r6" startOffset="20%">Курс 4  ·  Сира  ·  Баклажаны пармиджано с мороженым из таледжио и карамелизированным грецким орехом</textPath>
+  </text>
+
+  <!-- Ring 7: Курс 5 -->
+  <text font-family="'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif"
+        font-size="8" fill="#1a1a1a" letter-spacing="2">
+    <textPath href="#r7" startOffset="28%">Курс 5  ·  Пино Нуар  ·  Стейк Торнедо Россини</textPath>
+  </text>
+
+</svg>
+
+</body>
+</html>

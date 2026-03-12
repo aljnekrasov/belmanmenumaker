@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Radius Menu — print half A4</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <svg
+        class="rings"
+        viewBox="0 0 1050 2970"
+        aria-hidden="true"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs id="ring-defs"></defs>
+        <g class="ring-shapes" id="ring-shapes"></g>
+        <g class="course-on-ring" id="course-on-ring"></g>
+      </svg>
+    </main>
+    <script>
+      const svgNS = "http://www.w3.org/2000/svg";
+      const center = { x: 525, y: 1485 };
+      const minRadius = 20;
+      const maxRadius = 1480;
+      const radiusStep = 60;
+
+      const lines = [
+        "• • • • •",
+        "• • • • •",
+        "radius",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •",
+        "• • • • •"
+      ];
+
+      const ringDefs = document.getElementById("ring-defs");
+      const ringShapes = document.getElementById("ring-shapes");
+      const ringText = document.getElementById("course-on-ring");
+      const radii = [];
+
+      for (let radius = minRadius; radius <= maxRadius; radius += radiusStep) {
+        radii.push(radius);
+
+        const circle = document.createElementNS(svgNS, "circle");
+        circle.setAttribute("cx", String(center.x));
+        circle.setAttribute("cy", String(center.y));
+        circle.setAttribute("r", String(radius));
+        ringShapes.appendChild(circle);
+      }
+
+      const topRadii = [...radii].reverse();
+      const topCapacity = topRadii.length;
+      const topLines = lines.slice(0, topCapacity);
+      const innerLines = lines.slice(topCapacity);
+      function getPlacement(isInner) {
+        if (!isInner) return { offset: "25%", anchor: "start" };
+        return { offset: "75%", anchor: "start" };
+      }
+
+      topLines.forEach((line, index) => {
+        const radius = topRadii[index];
+        const pathId = `ring-top-${index}`;
+        const placement = getPlacement(false);
+
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("id", pathId);
+        path.setAttribute(
+          "d",
+          `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
+        );
+        ringDefs.appendChild(path);
+
+        const text = document.createElementNS(svgNS, "text");
+        const textPath = document.createElementNS(svgNS, "textPath");
+        textPath.setAttribute("href", `#${pathId}`);
+        textPath.setAttribute("startOffset", placement.offset);
+        textPath.setAttribute("text-anchor", placement.anchor);
+        textPath.textContent = line;
+        text.appendChild(textPath);
+        ringText.appendChild(text);
+      });
+
+      innerLines.forEach((line, index) => {
+        const radius = radii[index % radii.length];
+        const pathId = `ring-inner-${index}`;
+        const placement = getPlacement(true);
+
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("id", pathId);
+        path.setAttribute(
+          "d",
+          `M ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y}`
+        );
+        ringDefs.appendChild(path);
+
+        const text = document.createElementNS(svgNS, "text");
+        const textPath = document.createElementNS(svgNS, "textPath");
+        textPath.setAttribute("href", `#${pathId}`);
+        textPath.setAttribute("startOffset", placement.offset);
+        textPath.setAttribute("text-anchor", placement.anchor);
+        textPath.textContent = line;
+        text.appendChild(textPath);
+        ringText.appendChild(text);
+      });
+    </script>
+  </body>
+</html>
