@@ -69,15 +69,26 @@
       const topCapacity = topRadii.length;
       const topLines = lines.slice(0, topCapacity);
       const innerLines = lines.slice(topCapacity);
-      function getPlacement(isInner) {
-        if (!isInner) return { offset: "25%", anchor: "start" };
-        return { offset: "75%", anchor: "start" };
+      const layoutModes = ["center", "left", "right"];
+
+      function getPlacement(index, isInner) {
+        const mode = layoutModes[(index * 7 + 3) % layoutModes.length];
+
+        if (!isInner) {
+          if (mode === "left") return { offset: "69%", anchor: "start" };
+          if (mode === "right") return { offset: "81%", anchor: "end" };
+          return { offset: "75%", anchor: "middle" };
+        }
+
+        if (mode === "left") return { offset: "19%", anchor: "start" };
+        if (mode === "right") return { offset: "31%", anchor: "end" };
+        return { offset: "25%", anchor: "middle" };
       }
 
       topLines.forEach((line, index) => {
         const radius = topRadii[index];
         const pathId = `ring-top-${index}`;
-        const placement = getPlacement(false);
+        const placement = getPlacement(index, false);
 
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("id", pathId);
@@ -100,7 +111,7 @@
       innerLines.forEach((line, index) => {
         const radius = radii[index % radii.length];
         const pathId = `ring-inner-${index}`;
-        const placement = getPlacement(true);
+        const placement = getPlacement(index, true);
 
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("id", pathId);
