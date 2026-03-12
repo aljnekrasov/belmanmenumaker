@@ -27,27 +27,27 @@
       const radiusStep = 60;
 
       const lines = [
-        "• • • • •",
-        "• • • • •",
+        "— — — — —",
+        "— — — — —",
         "radius",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •",
-        "• • • • •"
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —",
+        "— — — — —"
       ];
 
       const ringDefs = document.getElementById("ring-defs");
@@ -92,7 +92,7 @@
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line;
+        textPath.textContent = line.replace(/•/g, '—');
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
@@ -115,7 +115,7 @@
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line;
+        textPath.textContent = line.replace(/•/g, '—');
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
