@@ -89,7 +89,8 @@
         ringShapes.appendChild(circle);
       }
 
-      const topRadii = [...radii].reverse();
+      const textRadii = radii.slice(9);
+      const topRadii = [...textRadii].reverse();
       const topCapacity = topRadii.length;
       const topLines = lines.slice(0, topCapacity);
       const innerLines = lines.slice(topCapacity);
@@ -142,7 +143,7 @@
       });
 
       innerLines.forEach((line, index) => {
-        const radius = radii[index % radii.length];
+        const radius = textRadii[index % textRadii.length];
         const pathId = `ring-inner-${index}`;
 
         const path = document.createElementNS(svgNS, "path");
