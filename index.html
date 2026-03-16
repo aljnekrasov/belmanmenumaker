@@ -94,6 +94,55 @@
         ringShapes.appendChild(circle);
       }
 
+      // "radius" on the 5th ring from center, italic
+      const titleRadius = radii[4];
+      const titlePathId = "ring-title-radius";
+      const titlePath = document.createElementNS(svgNS, "path");
+      titlePath.setAttribute("id", titlePathId);
+      titlePath.setAttribute(
+        "d",
+        `M ${center.x + titleRadius} ${center.y} A ${titleRadius} ${titleRadius} 0 1 1 ${center.x - titleRadius} ${center.y} A ${titleRadius} ${titleRadius} 0 1 1 ${center.x + titleRadius} ${center.y}`
+      );
+      ringDefs.appendChild(titlePath);
+
+      const titleText = document.createElementNS(svgNS, "text");
+      titleText.setAttribute("class", "title-on-ring");
+      const titleTextPath = document.createElementNS(svgNS, "textPath");
+      titleTextPath.setAttribute("href", `#${titlePathId}`);
+      titleTextPath.setAttribute("startOffset", "75%");
+      titleTextPath.setAttribute("text-anchor", "middle");
+      titleTextPath.textContent = "radius";
+      titleText.appendChild(titleTextPath);
+      ringText.appendChild(titleText);
+
+      // Description on inner side of 7th and 8th rings, bottom
+      const descLines = [
+        { ring: 6, text: "поп-ап ресторан радиус собрал лучшие продукты в радиусе 45 километров" },
+        { ring: 7, text: "чтобы организовать этот замечательный вечер" }
+      ];
+
+      descLines.forEach(({ ring, text: content }, i) => {
+        const r = radii[ring];
+        const pathId = `ring-desc-${i}`;
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("id", pathId);
+        path.setAttribute(
+          "d",
+          `M ${center.x + r} ${center.y} A ${r} ${r} 0 1 0 ${center.x - r} ${center.y} A ${r} ${r} 0 1 0 ${center.x + r} ${center.y}`
+        );
+        ringDefs.appendChild(path);
+
+        const textEl = document.createElementNS(svgNS, "text");
+        textEl.setAttribute("class", "course-on-ring");
+        const tp = document.createElementNS(svgNS, "textPath");
+        tp.setAttribute("href", `#${pathId}`);
+        tp.setAttribute("startOffset", "25%");
+        tp.setAttribute("text-anchor", "middle");
+        tp.textContent = content;
+        textEl.appendChild(tp);
+        ringText.appendChild(textEl);
+      });
+
       const textRadii = radii.slice(9);
       const topRadii = [...textRadii].reverse();
       const topCapacity = topRadii.length;
