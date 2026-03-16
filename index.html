@@ -74,6 +74,11 @@
 
       const lines = rawMenuLines.flatMap((line) => splitLongLine(line, maxLineLength));
 
+      function padLine(line) {
+        const count = 5 + Math.floor(Math.random() * 6);
+        return "\u00A0".repeat(count) + line;
+      }
+
       const ringDefs = document.getElementById("ring-defs");
       const ringShapes = document.getElementById("ring-shapes");
       const ringText = document.getElementById("course-on-ring");
@@ -93,11 +98,11 @@
       const topRadii = [...textRadii].reverse();
       const topCapacity = topRadii.length;
       const topLines = lines.slice(0, topCapacity);
-      const innerLines = lines.slice(topCapacity);
+      const bottomLines = lines.slice(topCapacity);
       const leftStartX = 0;
       const searchSamples = 2048;
 
-      function getLeftEdgeOffset(path) {
+      function getLeftEdgeOffsetTop(path) {
         const totalLength = path.getTotalLength();
         let bestLength = 0;
         let bestDelta = Number.POSITIVE_INFINITY;
@@ -106,7 +111,6 @@
           const length = (i / searchSamples) * totalLength;
           const point = path.getPointAtLength(length);
 
-          // Keep text on the upper half and align as close as possible to sheet's left edge.
           if (point.y > center.y) continue;
 
           const delta = Math.abs(point.x - leftStartX);
@@ -119,6 +123,28 @@
         return `${bestLength}`;
       }
 
+      function getLeftEdgeOffsetBottom(path) {
+        const totalLength = path.getTotalLength();
+        let bestLength = 0;
+        let bestDelta = Number.POSITIVE_INFINITY;
+
+        for (let i = 0; i <= searchSamples; i += 1) {
+          const length = (i / searchSamples) * totalLength;
+          const point = path.getPointAtLength(length);
+
+          if (point.y < center.y) continue;
+
+          const delta = Math.abs(point.x - leftStartX);
+          if (delta < bestDelta) {
+            bestDelta = delta;
+            bestLength = length;
+          }
+        }
+
+        return `${bestLength}`;
+      }
+
+      // Outer side, upper half — from largest ring inward
       topLines.forEach((line, index) => {
         const radius = topRadii[index];
         const pathId = `ring-top-${index}`;
@@ -130,37 +156,39 @@
           `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
         );
         ringDefs.appendChild(path);
-        const placement = { offset: getLeftEdgeOffset(path), anchor: "start" };
+        const placement = { offset: getLeftEdgeOffsetTop(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line;
+        textPath.textContent = padLine(line);
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
 
-      innerLines.forEach((line, index) => {
-        const radius = textRadii[index % textRadii.length];
-        const pathId = `ring-inner-${index}`;
+      // Inner side, lower half — from 10th ring outward
+      const bottomRadii = [...textRadii];
+      bottomLines.forEach((line, index) => {
+        const radius = bottomRadii[index % bottomRadii.length];
+        const pathId = `ring-bottom-${index}`;
 
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("id", pathId);
         path.setAttribute(
           "d",
-          `M ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y}`
+          `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y}`
         );
         ringDefs.appendChild(path);
-        const placement = { offset: getLeftEdgeOffset(path), anchor: "start" };
+        const placement = { offset: getLeftEdgeOffsetBottom(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
         textPath.setAttribute("startOffset", placement.offset);
         textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = line;
+        textPath.textContent = padLine(line);
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
