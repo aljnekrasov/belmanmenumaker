@@ -46,6 +46,11 @@ body {
   stroke-width: 2;
 }
 
+.golden-rays line {
+  stroke: #c9a84c;
+  stroke-width: 1;
+}
+
 .title-on-ring {
   fill: #111;
   font-size: 56px;

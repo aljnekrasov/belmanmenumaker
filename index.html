@@ -14,8 +14,27 @@
         aria-hidden="true"
         preserveAspectRatio="xMidYMid slice"
       >
-        <defs id="ring-defs"></defs>
+        <defs id="ring-defs">
+          <clipPath id="photo-clip">
+            <circle id="photo-clip-circle" />
+          </clipPath>
+          <filter id="golden">
+            <feColorMatrix type="matrix" values="
+              0.6 0.4 0.2 0 0.05
+              0.5 0.35 0.15 0 0.02
+              0.2 0.15 0.1 0 0
+              0   0    0   1 0
+            " />
+          </filter>
+        </defs>
         <g class="ring-shapes" id="ring-shapes"></g>
+        <image
+          id="center-photo"
+          href="./photo.png"
+          clip-path="url(#photo-clip)"
+          filter="url(#golden)"
+          preserveAspectRatio="xMidYMid slice"
+        />
         <g class="course-on-ring" id="course-on-ring"></g>
       </svg>
     </main>
@@ -26,8 +45,9 @@
       const maxRadius = 1480;
       const radiusStep = 60;
 
-      const maxLineLength = 35;
+      const maxLineLength = 40;
       const rawMenuLines = [
+        "radius",
         "Курс 0",
         "Стартер",
         "Огород и дзадзыки",
@@ -40,8 +60,6 @@
         "Курс 3",
         "Санджовезе розе",
         "Свекольное ризотто с малиной и козьим сыром",
-        "ИЛИ",
-        "Свекольный тарт татен с козьим сыром и травами (мята, чабрец, розмарин)",
         "Курс 4",
         "Сира",
         "Баклажаны пармиджано с мороженым из таледжио и карамелизированным грецким орехом",
@@ -75,8 +93,7 @@
       const lines = rawMenuLines.flatMap((line) => splitLongLine(line, maxLineLength));
 
       function padLine(line) {
-        const count = 5 + Math.floor(Math.random() * 6);
-        return "\u00A0".repeat(count) + line;
+        return "\u00A0".repeat(3) + line;
       }
 
       const ringDefs = document.getElementById("ring-defs");
@@ -94,60 +111,71 @@
         ringShapes.appendChild(circle);
       }
 
-      // "radius" on the 5th ring from center, italic
-      const titleRadius = radii[4];
-      const titlePathId = "ring-title-radius";
-      const titlePath = document.createElementNS(svgNS, "path");
-      titlePath.setAttribute("id", titlePathId);
-      titlePath.setAttribute(
-        "d",
-        `M ${center.x + titleRadius} ${center.y} A ${titleRadius} ${titleRadius} 0 1 1 ${center.x - titleRadius} ${center.y} A ${titleRadius} ${titleRadius} 0 1 1 ${center.x + titleRadius} ${center.y}`
-      );
-      ringDefs.appendChild(titlePath);
+      // Place photo clipped to 4th ring
+      const photoRadius = radii[3];
+      const clipCircle = document.getElementById("photo-clip-circle");
+      clipCircle.setAttribute("cx", String(center.x));
+      clipCircle.setAttribute("cy", String(center.y));
+      clipCircle.setAttribute("r", String(photoRadius));
 
-      const titleText = document.createElementNS(svgNS, "text");
-      titleText.setAttribute("class", "title-on-ring");
-      const titleTextPath = document.createElementNS(svgNS, "textPath");
-      titleTextPath.setAttribute("href", `#${titlePathId}`);
-      titleTextPath.setAttribute("startOffset", "75%");
-      titleTextPath.setAttribute("text-anchor", "middle");
-      titleTextPath.textContent = "radius";
-      titleText.appendChild(titleTextPath);
-      ringText.appendChild(titleText);
+      const photoEl = document.getElementById("center-photo");
+      photoEl.setAttribute("x", String(center.x - photoRadius));
+      photoEl.setAttribute("y", String(center.y - photoRadius));
+      photoEl.setAttribute("width", String(photoRadius * 2));
+      photoEl.setAttribute("height", String(photoRadius * 2));
 
-      // Description on inner side of 7th and 8th rings, bottom
-      const descLines = [
-        { ring: 6, text: "поп-ап ресторан радиус собрал лучшие продукты в радиусе 45 километров" },
-        { ring: 7, text: "чтобы организовать этот замечательный вечер" }
-      ];
+      // Golden radial lines from 4th ring outward
+      const rayCount = 36;
+      const rayInnerR = radii[3];
+      const rayOuterR = radii[radii.length - 1];
+      const rayGroup = document.createElementNS(svgNS, "g");
+      rayGroup.setAttribute("class", "golden-rays");
+      for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2;
+        const x1 = center.x + Math.cos(angle) * rayInnerR;
+        const y1 = center.y + Math.sin(angle) * rayInnerR;
+        const x2 = center.x + Math.cos(angle) * rayOuterR;
+        const y2 = center.y + Math.sin(angle) * rayOuterR;
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("x1", String(x1));
+        line.setAttribute("y1", String(y1));
+        line.setAttribute("x2", String(x2));
+        line.setAttribute("y2", String(y2));
+        rayGroup.appendChild(line);
+      }
+      ringShapes.parentNode.insertBefore(rayGroup, ringShapes.nextSibling);
 
-      descLines.forEach(({ ring, text: content }, i) => {
-        const r = radii[ring];
-        const pathId = `ring-desc-${i}`;
-        const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("id", pathId);
-        path.setAttribute(
-          "d",
-          `M ${center.x + r} ${center.y} A ${r} ${r} 0 1 0 ${center.x - r} ${center.y} A ${r} ${r} 0 1 0 ${center.x + r} ${center.y}`
-        );
-        ringDefs.appendChild(path);
-
-        const textEl = document.createElementNS(svgNS, "text");
-        textEl.setAttribute("class", "course-on-ring");
-        const tp = document.createElementNS(svgNS, "textPath");
-        tp.setAttribute("href", `#${pathId}`);
-        tp.setAttribute("startOffset", "25%");
-        tp.setAttribute("text-anchor", "middle");
-        tp.textContent = content;
-        textEl.appendChild(tp);
-        ringText.appendChild(textEl);
-      });
-
-      const textRadii = radii.slice(9);
+      const textRadii = radii.slice(4, -2);
       const topRadii = [...textRadii].reverse();
       const topCapacity = topRadii.length;
-      const topLines = lines.slice(0, topCapacity);
-      const bottomLines = lines.slice(topCapacity);
+
+      // Group lines into courses (a course starts with a "Курс" line)
+      const courses = [];
+      let currentCourse = [];
+      lines.forEach((line) => {
+        if (/курс/i.test(line) && currentCourse.length > 0) {
+          courses.push(currentCourse);
+          currentCourse = [];
+        }
+        currentCourse.push(line);
+      });
+      if (currentCourse.length > 0) courses.push(currentCourse);
+
+      // Place courses on top side; if a course doesn't fit, move it and the rest to bottom
+      const topLines = [];
+      const bottomLines = [];
+      let overflow = false;
+      courses.forEach((course) => {
+        const needed = course.length + (topLines.length > 0 ? 1 : 0);
+        if (!overflow && topLines.length + needed <= topCapacity) {
+          if (topLines.length > 0) topLines.push("");
+          topLines.push(...course);
+        } else {
+          overflow = true;
+          if (bottomLines.length > 0) bottomLines.push("");
+          bottomLines.push(...course);
+        }
+      });
       const leftStartX = 0;
       const searchSamples = 2048;
 
@@ -205,22 +233,25 @@
           `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
         );
         ringDefs.appendChild(path);
-        const placement = { offset: getLeftEdgeOffsetTop(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", placement.offset);
-        textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = padLine(line);
+        textPath.setAttribute("startOffset", "75%");
+        textPath.setAttribute("text-anchor", "middle");
+        textPath.textContent = line;
+        if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
+        if (line === "radius") text.setAttribute("class", "title-on-ring");
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
 
-      // Inner side, lower half — from 10th ring outward
+      // Inner side, lower half — mirror the gap from top
       const bottomRadii = [...textRadii];
+      const topGap = topCapacity - topLines.length;
+      const bottomStart = topGap;
       bottomLines.forEach((line, index) => {
-        const radius = bottomRadii[index % bottomRadii.length];
+        const radius = bottomRadii[Math.max(0, bottomStart + index)];
         const pathId = `ring-bottom-${index}`;
 
         const path = document.createElementNS(svgNS, "path");
@@ -230,14 +261,14 @@
           `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y}`
         );
         ringDefs.appendChild(path);
-        const placement = { offset: getLeftEdgeOffsetBottom(path), anchor: "start" };
 
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", placement.offset);
-        textPath.setAttribute("text-anchor", placement.anchor);
-        textPath.textContent = padLine(line);
+        textPath.setAttribute("startOffset", "75%");
+        textPath.setAttribute("text-anchor", "middle");
+        textPath.textContent = line;
+        if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
