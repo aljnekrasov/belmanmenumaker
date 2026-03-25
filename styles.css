@@ -42,8 +42,8 @@ body {
 
 .ring-shapes circle {
   fill: none;
-  stroke: #ffffff;
-  stroke-width: 2;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1;
 }
 
 .golden-rays line {
@@ -52,15 +52,27 @@ body {
 }
 
 .title-on-ring {
-  fill: #111;
+  fill: #111111;
   font-size: 56px;
   letter-spacing: 4px;
   font-style: italic;
 }
 
+.label-on-page {
+  fill: #111111;
+  font-size: 22px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.menu-title {
+  fill: #111111;
+  font-size: 87px;
+}
+
 .course-on-ring {
-  fill: #222;
-  font-size: 36px;
+  fill: #111111;
+  font-size: 29px;
   letter-spacing: 0.1px;
 }
 

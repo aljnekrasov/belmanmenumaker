@@ -15,26 +15,33 @@
         preserveAspectRatio="xMidYMid slice"
       >
         <defs id="ring-defs">
+          <clipPath id="bg-clip">
+            <circle id="bg-clip-circle" />
+          </clipPath>
           <clipPath id="photo-clip">
             <circle id="photo-clip-circle" />
           </clipPath>
-          <filter id="golden">
-            <feColorMatrix type="matrix" values="
-              0.6 0.4 0.2 0 0.05
-              0.5 0.35 0.15 0 0.02
-              0.2 0.15 0.1 0 0
-              0   0    0   1 0
-            " />
+          <filter id="grayscale">
+            <feColorMatrix type="saturate" values="0" />
           </filter>
         </defs>
+        <image
+          id="bg-image"
+          href="./bg.png"
+          x="0" y="0"
+          width="1050" height="2970"
+          clip-path="url(#bg-clip)"
+          preserveAspectRatio="xMidYMid slice"
+        />
         <g class="ring-shapes" id="ring-shapes"></g>
         <image
           id="center-photo"
           href="./photo.png"
           clip-path="url(#photo-clip)"
-          filter="url(#golden)"
+          filter="url(#grayscale)"
           preserveAspectRatio="xMidYMid slice"
         />
+        <image id="center-logo" href="./new.svg" preserveAspectRatio="xMidYMid meet" style="filter: brightness(0) invert(1);" />
         <g class="course-on-ring" id="course-on-ring"></g>
       </svg>
     </main>
@@ -43,11 +50,12 @@
       const center = { x: 525, y: 1485 };
       const minRadius = 20;
       const maxRadius = 1480;
-      const radiusStep = 60;
+      const radiusStep = 62;
 
       const maxLineLength = 40;
       const rawMenuLines = [
-        "radius",
+
+        "",
         "Курс 0",
         "Стартер",
         "Огород и дзадзыки",
@@ -111,12 +119,18 @@
         ringShapes.appendChild(circle);
       }
 
-      // Place photo clipped to 4th ring
+      // Clip bg to 5th ring
+      const bgClipCircle = document.getElementById("bg-clip-circle");
+      bgClipCircle.setAttribute("cx", String(center.x));
+      bgClipCircle.setAttribute("cy", String(center.y));
+      bgClipCircle.setAttribute("r", String(radii[4]));
+
+      // Place photo.png clipped to 4th ring, grayscale
       const photoRadius = radii[3];
-      const clipCircle = document.getElementById("photo-clip-circle");
-      clipCircle.setAttribute("cx", String(center.x));
-      clipCircle.setAttribute("cy", String(center.y));
-      clipCircle.setAttribute("r", String(photoRadius));
+      const photoClipCircle = document.getElementById("photo-clip-circle");
+      photoClipCircle.setAttribute("cx", String(center.x));
+      photoClipCircle.setAttribute("cy", String(center.y));
+      photoClipCircle.setAttribute("r", String(photoRadius));
 
       const photoEl = document.getElementById("center-photo");
       photoEl.setAttribute("x", String(center.x - photoRadius));
@@ -124,26 +138,33 @@
       photoEl.setAttribute("width", String(photoRadius * 2));
       photoEl.setAttribute("height", String(photoRadius * 2));
 
-      // Golden radial lines from 4th ring outward
-      const rayCount = 36;
-      const rayInnerR = radii[3];
-      const rayOuterR = radii[radii.length - 1];
-      const rayGroup = document.createElementNS(svgNS, "g");
-      rayGroup.setAttribute("class", "golden-rays");
-      for (let i = 0; i < rayCount; i++) {
-        const angle = (i / rayCount) * Math.PI * 2;
-        const x1 = center.x + Math.cos(angle) * rayInnerR;
-        const y1 = center.y + Math.sin(angle) * rayInnerR;
-        const x2 = center.x + Math.cos(angle) * rayOuterR;
-        const y2 = center.y + Math.sin(angle) * rayOuterR;
-        const line = document.createElementNS(svgNS, "line");
-        line.setAttribute("x1", String(x1));
-        line.setAttribute("y1", String(y1));
-        line.setAttribute("x2", String(x2));
-        line.setAttribute("y2", String(y2));
-        rayGroup.appendChild(line);
-      }
-      ringShapes.parentNode.insertBefore(rayGroup, ringShapes.nextSibling);
+      // Center new.svg logo
+      const logoEl = document.getElementById("center-logo");
+      const logoWidth = radii[3] * 1.68;
+      const logoHeight = logoWidth * (57.14 / 204.04);
+      logoEl.setAttribute("x", String(center.x - logoWidth / 2));
+      logoEl.setAttribute("y", String(center.y - logoHeight / 2));
+      logoEl.setAttribute("width", String(logoWidth));
+      logoEl.setAttribute("height", String(logoHeight));
+
+      // Labels on the page corners
+      const labels = [
+        { text: "вино", x: 60, y: 60, anchor: "start" },
+        { text: "родное", x: 990, y: 60, anchor: "end" },
+        { text: "ресторан", x: 60, y: 2920, anchor: "start" },
+        { text: "крым", x: 990, y: 2920, anchor: "end" },
+        { text: "2026", x: 525, y: 2920, anchor: "middle" }
+      ];
+
+      labels.forEach((item) => {
+        const text = document.createElementNS(svgNS, "text");
+        text.setAttribute("class", "label-on-page");
+        text.setAttribute("x", String(item.x));
+        text.setAttribute("y", String(item.y));
+        text.setAttribute("text-anchor", item.anchor);
+        text.textContent = item.text;
+        ringText.appendChild(text);
+      });
 
       const textRadii = radii.slice(4, -2);
       const topRadii = [...textRadii].reverse();
@@ -164,16 +185,18 @@
       // Place courses on top side; if a course doesn't fit, move it and the rest to bottom
       const topLines = [];
       const bottomLines = [];
+      const topLineCourseIdx = [];
+      const bottomLineCourseIdx = [];
       let overflow = false;
-      courses.forEach((course) => {
+      courses.forEach((course, ci) => {
         const needed = course.length + (topLines.length > 0 ? 1 : 0);
         if (!overflow && topLines.length + needed <= topCapacity) {
-          if (topLines.length > 0) topLines.push("");
-          topLines.push(...course);
+          if (topLines.length > 0) { topLines.push(""); topLineCourseIdx.push(ci); }
+          course.forEach((l) => { topLines.push(l); topLineCourseIdx.push(ci); });
         } else {
           overflow = true;
-          if (bottomLines.length > 0) bottomLines.push("");
-          bottomLines.push(...course);
+          if (bottomLines.length > 0) { bottomLines.push(""); bottomLineCourseIdx.push(ci); }
+          course.forEach((l) => { bottomLines.push(l); bottomLineCourseIdx.push(ci); });
         }
       });
       const leftStartX = 0;
@@ -221,6 +244,11 @@
         return `${bestLength}`;
       }
 
+      function chaoticOffset(courseIndex, base) {
+        const offsets = [0, -3, 4, -2, 3, -4, 2, -1];
+        return base + offsets[courseIndex % offsets.length];
+      }
+
       // Outer side, upper half — from largest ring inward
       topLines.forEach((line, index) => {
         const radius = topRadii[index];
@@ -237,11 +265,11 @@
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", "75%");
+        textPath.setAttribute("startOffset", `${chaoticOffset(topLineCourseIdx[index], 75)}%`);
         textPath.setAttribute("text-anchor", "middle");
         textPath.textContent = line;
         if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
-        if (line === "radius") text.setAttribute("class", "title-on-ring");
+        if (line === "меню") text.setAttribute("class", "menu-title");
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
@@ -265,10 +293,11 @@
         const text = document.createElementNS(svgNS, "text");
         const textPath = document.createElementNS(svgNS, "textPath");
         textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", "75%");
+        textPath.setAttribute("startOffset", `${chaoticOffset(bottomLineCourseIdx[index], 75)}%`);
         textPath.setAttribute("text-anchor", "middle");
         textPath.textContent = line;
         if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
+        if (line === "меню") text.setAttribute("class", "menu-title");
         text.appendChild(textPath);
         ringText.appendChild(text);
       });
