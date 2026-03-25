@@ -50,9 +50,9 @@
       const center = { x: 525, y: 1485 };
       const minRadius = 20;
       const maxRadius = 1480;
-      const radiusStep = 62;
+      const radiusStep = 48;
 
-      const maxLineLength = 40;
+      const maxLineLength = 30;
       const rawMenuLines = [
 
         "",
@@ -148,25 +148,8 @@
       logoEl.setAttribute("height", String(logoHeight));
 
       // Labels on the page corners
-      const labels = [
-        { text: "вино", x: 60, y: 60, anchor: "start" },
-        { text: "родное", x: 990, y: 60, anchor: "end" },
-        { text: "ресторан", x: 60, y: 2920, anchor: "start" },
-        { text: "крым", x: 990, y: 2920, anchor: "end" },
-        { text: "2026", x: 525, y: 2920, anchor: "middle" }
-      ];
 
-      labels.forEach((item) => {
-        const text = document.createElementNS(svgNS, "text");
-        text.setAttribute("class", "label-on-page");
-        text.setAttribute("x", String(item.x));
-        text.setAttribute("y", String(item.y));
-        text.setAttribute("text-anchor", item.anchor);
-        text.textContent = item.text;
-        ringText.appendChild(text);
-      });
-
-      const textRadii = radii.slice(4, -2);
+      const textRadii = radii.slice(4);
       const topRadii = [...textRadii].reverse();
       const topCapacity = topRadii.length;
 

@@ -29,8 +29,10 @@ body {
   width: var(--page-width);
   min-height: var(--page-height);
   margin: 0 auto;
+  padding: 0 5mm;
   overflow: hidden;
   background: var(--paper);
+  box-sizing: border-box;
 }
 
 .rings {
