@@ -210,6 +210,70 @@
         fill: #111;
       }
 
+      /* ── Mobile tabs ── */
+      .tab-bar {
+        display: none;
+        flex-shrink: 0;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .tab-bar button {
+        flex: 1;
+        padding: 12px;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s;
+      }
+      .tab-bar button.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        .app {
+          flex-direction: column;
+          height: 100dvh;
+        }
+
+        .tab-bar { display: flex; }
+
+        .editor {
+          width: 100%;
+          min-width: 0;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          flex: 1;
+          min-height: 0;
+        }
+        .editor.hidden { display: none; }
+
+        .field textarea { height: 200px; }
+
+        .preview {
+          flex: 1;
+          padding: 16px 8px;
+          min-height: 0;
+        }
+        .preview.hidden { display: none; }
+
+        .page {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 105 / 297;
+          max-width: 320px;
+        }
+
+        .page svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
       /* ── Print ── */
       @page { size: 105mm 297mm; margin: 0; }
 
@@ -234,8 +298,14 @@
   <body>
     <div class="app">
 
+      <!-- ── Mobile tab bar ── -->
+      <div class="tab-bar">
+        <button id="tab-edit" class="active" onclick="showTab('edit')">Редактор</button>
+        <button id="tab-preview" onclick="showTab('preview')">Превью</button>
+      </div>
+
       <!-- ── Editor panel ── -->
-      <aside class="editor">
+      <aside class="editor" id="panel-edit">
         <div class="editor-header">Редактор меню</div>
         <div class="editor-body">
 
@@ -265,7 +335,10 @@
 
 Курс 5
 Пино Нуар
-Стейк Торнедо Россини</textarea>
+Стейк Торнедо Россини
+
+Курс 6
+Мариновая черепаха в специях ратата тата</textarea>
             <div class="field-hint">
               Каждый курс начинается со строки «Курс N».<br>
               <strong style="color:var(--text)">$</strong> — прозрачный пустой слот на кольце.
@@ -284,6 +357,18 @@
               oninput="document.getElementById('maxLineLenVal').textContent = this.value" />
           </div>
 
+          <div class="slider-field">
+            <label>Кол-во колец <span id="ringCountVal">31</span></label>
+            <input type="range" id="ringCount" value="31" min="5" max="60" step="1"
+              oninput="onRingCountChange()" />
+          </div>
+
+          <div class="slider-field">
+            <label>Пропустить колец (центр) <span id="skipRingsVal">4</span></label>
+            <input type="range" id="skipRings" value="4" min="0" max="15" step="1"
+              oninput="onSkipRingsChange()" />
+          </div>
+
         </div>
         <div class="editor-footer">
           <button class="btn-print" onclick="window.print()">Сохранить PDF / Печать</button>
@@ -291,7 +376,7 @@
       </aside>
 
       <!-- ── Preview ── -->
-      <div class="preview">
+      <div class="preview hidden" id="panel-preview">
         <main class="page">
           <svg
             class="rings"
@@ -339,46 +424,81 @@
       const svgNS = "http://www.w3.org/2000/svg";
       const center = { x: 525, y: 1485 };
       const minRadius = 20;
-      const maxRadius = 1480;
       const radiusStep = 48;
 
-      // ── Build static rings once ──
-      const ringShapes = document.getElementById("ring-shapes");
-      const radii = [];
-      for (let r = minRadius; r <= maxRadius; r += radiusStep) {
-        radii.push(r);
-        const c = document.createElementNS(svgNS, "circle");
-        c.setAttribute("cx", String(center.x));
-        c.setAttribute("cy", String(center.y));
-        c.setAttribute("r", String(r));
-        ringShapes.appendChild(c);
+      let radii = [];
+      let skipRatio = 4 / 31; // skip / total — kept in sync
+
+      function onRingCountChange() {
+        const ringCount = parseInt(document.getElementById("ringCount").value, 10) || 31;
+        const newSkip   = Math.round(skipRatio * ringCount);
+        const skipEl    = document.getElementById("skipRings");
+        skipEl.value    = newSkip;
+        document.getElementById("skipRingsVal").textContent = newSkip;
+        document.getElementById("ringCountVal").textContent = ringCount;
+        rebuildRings();
       }
 
-      // ── Clip / photo / logo (static) ──
-      const bgClipCircle = document.getElementById("bg-clip-circle");
-      bgClipCircle.setAttribute("cx", String(center.x));
-      bgClipCircle.setAttribute("cy", String(center.y));
-      bgClipCircle.setAttribute("r", String(radii[4]));
+      function onSkipRingsChange() {
+        const ringCount = parseInt(document.getElementById("ringCount").value, 10) || 31;
+        const skipRings = parseInt(document.getElementById("skipRings").value, 10) || 0;
+        skipRatio = skipRings / ringCount;
+        document.getElementById("skipRingsVal").textContent = skipRings;
+        rebuildRings();
+      }
 
-      const photoRadius = radii[3];
-      const photoClipCircle = document.getElementById("photo-clip-circle");
-      photoClipCircle.setAttribute("cx", String(center.x));
-      photoClipCircle.setAttribute("cy", String(center.y));
-      photoClipCircle.setAttribute("r", String(photoRadius));
+      // ── Build rings + update center elements ──
+      function rebuildRings() {
+        const ringCount = parseInt(document.getElementById("ringCount").value, 10) || 31;
+        const skipRings = parseInt(document.getElementById("skipRings").value, 10) || 0;
 
-      const photoEl = document.getElementById("center-photo");
-      photoEl.setAttribute("x", String(center.x - photoRadius));
-      photoEl.setAttribute("y", String(center.y - photoRadius));
-      photoEl.setAttribute("width", String(photoRadius * 2));
-      photoEl.setAttribute("height", String(photoRadius * 2));
+        const ringShapes = document.getElementById("ring-shapes");
+        ringShapes.innerHTML = "";
+        radii = [];
+        for (let i = 0; i < ringCount; i++) {
+          const r = minRadius + i * radiusStep;
+          radii.push(r);
+          const c = document.createElementNS(svgNS, "circle");
+          c.setAttribute("cx", String(center.x));
+          c.setAttribute("cy", String(center.y));
+          c.setAttribute("r", String(r));
+          ringShapes.appendChild(c);
+        }
 
-      const logoEl = document.getElementById("center-logo");
-      const logoWidth = radii[3] * 1.68;
-      const logoHeight = logoWidth * (57.14 / 204.04);
-      logoEl.setAttribute("x", String(center.x - logoWidth / 2));
-      logoEl.setAttribute("y", String(center.y - logoHeight / 2));
-      logoEl.setAttribute("width", String(logoWidth));
-      logoEl.setAttribute("height", String(logoHeight));
+        // Center elements: clip boundary = skipRings-th ring, photo = one ring inside
+        const clipIdx  = Math.min(skipRings, radii.length - 1);
+        const photoIdx = Math.max(0, clipIdx - 1);
+
+        const clipRadius  = radii[clipIdx];
+        const photoRadius = radii[photoIdx];
+
+        const bgClipCircle = document.getElementById("bg-clip-circle");
+        bgClipCircle.setAttribute("cx", String(center.x));
+        bgClipCircle.setAttribute("cy", String(center.y));
+        bgClipCircle.setAttribute("r", String(clipRadius));
+
+        const photoClipCircle = document.getElementById("photo-clip-circle");
+        photoClipCircle.setAttribute("cx", String(center.x));
+        photoClipCircle.setAttribute("cy", String(center.y));
+        photoClipCircle.setAttribute("r", String(photoRadius));
+
+        const photoEl = document.getElementById("center-photo");
+        photoEl.setAttribute("x", String(center.x - photoRadius));
+        photoEl.setAttribute("y", String(center.y - photoRadius));
+        photoEl.setAttribute("width", String(photoRadius * 2));
+        photoEl.setAttribute("height", String(photoRadius * 2));
+
+        // Logo scales directly with the clip boundary ring
+        const logoEl     = document.getElementById("center-logo");
+        const logoWidth  = clipRadius * 1.3;
+        const logoHeight = logoWidth * (57.14 / 204.04);
+        logoEl.setAttribute("x", String(center.x - logoWidth / 2));
+        logoEl.setAttribute("y", String(center.y - logoHeight / 2));
+        logoEl.setAttribute("width", String(logoWidth));
+        logoEl.setAttribute("height", String(logoHeight));
+
+        render();
+      }
 
       // ── Helpers ──
       function splitLongLine(line, maxLen) {
@@ -431,7 +551,8 @@
         });
         if (cur.length > 0) courses.push(cur);
 
-        const textRadii    = radii.slice(4, -1); // skip outermost ring
+        const skipRings = parseInt(document.getElementById("skipRings").value, 10) ?? 4;
+        const textRadii    = radii.slice(skipRings, -1); // skip center + outermost ring
         const topRadii     = [...textRadii].reverse();
         const topCapacity  = topRadii.length;
 
@@ -493,9 +614,44 @@
       document.getElementById("menuText").addEventListener("input", render);
       document.getElementById("fontSize").addEventListener("input", render);
       document.getElementById("maxLineLen").addEventListener("input", render);
+      // ringCount and skipRings are wired via oninput on the elements themselves
 
-      // ── Initial render ──
-      render();
+      // ── Mobile tab switching ──
+      function showTab(tab) {
+        const editPanel    = document.getElementById("panel-edit");
+        const previewPanel = document.getElementById("panel-preview");
+        const btnEdit      = document.getElementById("tab-edit");
+        const btnPreview   = document.getElementById("tab-preview");
+        if (tab === "edit") {
+          editPanel.classList.remove("hidden");
+          previewPanel.classList.add("hidden");
+          btnEdit.classList.add("active");
+          btnPreview.classList.remove("active");
+        } else {
+          previewPanel.classList.remove("hidden");
+          editPanel.classList.add("hidden");
+          btnPreview.classList.add("active");
+          btnEdit.classList.remove("active");
+        }
+      }
+
+      // On desktop always show both panels
+      const mq = window.matchMedia("(max-width: 640px)");
+      function syncLayout(e) {
+        const previewPanel = document.getElementById("panel-preview");
+        if (!e.matches) {
+          document.getElementById("panel-edit").classList.remove("hidden");
+          previewPanel.classList.remove("hidden");
+        } else {
+          // restore default mobile state (edit visible, preview hidden)
+          showTab("edit");
+        }
+      }
+      mq.addEventListener("change", syncLayout);
+      syncLayout(mq);
+
+      // ── Initial build + render ──
+      rebuildRings();
     </script>
   </body>
 </html>
