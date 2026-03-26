@@ -3,286 +3,146 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Radius Menu — print half A4</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <title>Радиус — Визитка</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap" rel="stylesheet" />
+    <style>
+      @page { size: 90mm 50mm; margin: 0; }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { background: #1a1a1a; }
+      body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+      .card { width: 90mm; height: 50mm; overflow: hidden; }
+      svg { display: block; width: 100%; height: 100%; }
+      @media screen {
+        .card { width: 810px; height: 450px; box-shadow: 0 12px 60px rgba(0,0,0,.9); }
+      }
+      @media print {
+        html, body { background: #000; min-height: 0; display: block; }
+        .card { width: 90mm; height: 50mm; }
+      }
+    </style>
   </head>
   <body>
-    <main class="page">
-      <svg
-        class="rings"
-        viewBox="0 0 1050 2970"
-        aria-hidden="true"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs id="ring-defs">
-          <clipPath id="bg-clip">
-            <circle id="bg-clip-circle" />
+    <div class="card">
+      <!--
+        ViewBox 900×500, center cx=450 cy=250
+
+        CW full-circle  M(cx+r, cy) sweep=1:
+          0%  / 100% = право    (3 ч)
+          25%         = низ     (6 ч)
+          50%         = лево    (9 ч)
+          75%         = верх    (12 ч)
+
+        CCW full-circle M(cx+r, cy) sweep=0:
+          0%  / 100% = право    (3 ч)
+          25%         = верх    (12 ч)
+          50%         = лево    (9 ч)
+          75%         = низ     (6 ч)
+
+        Пять надписей покрывают все стороны:
+          #0  CW  75%  →  верх-центр        (12 ч)
+          #1  CW  87%  →  верх-право        (1:30)
+          #2  CCW 75%  →  низ-центр         (6 ч)
+          #3  CW  62%  →  верх-лево         (10:30)
+          #4  CCW 62%  →  низ-лево          (7:30)
+      -->
+      <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+
+        <defs id="card-defs">
+          <clipPath id="card-clip">
+            <rect x="0" y="0" width="900" height="500" />
           </clipPath>
-          <clipPath id="photo-clip">
-            <circle id="photo-clip-circle" />
-          </clipPath>
-          <filter id="grayscale">
-            <feColorMatrix type="saturate" values="0" />
-          </filter>
         </defs>
+
+        <rect width="900" height="500" fill="#080808" />
+        <g id="ring-shapes"></g>
+        <circle cx="450" cy="250" r="88" fill="#080808" />
         <image
-          id="bg-image"
-          href="./bg.png"
-          x="0" y="0"
-          width="1050" height="2970"
-          clip-path="url(#bg-clip)"
-          preserveAspectRatio="xMidYMid slice"
+          id="center-logo"
+          href="./new.svg"
+          preserveAspectRatio="xMidYMid meet"
+          style="filter: brightness(0) invert(1);"
         />
-        <g class="ring-shapes" id="ring-shapes"></g>
-        <image
-          id="center-photo"
-          href="./photo.png"
-          clip-path="url(#photo-clip)"
-          filter="url(#grayscale)"
-          preserveAspectRatio="xMidYMid slice"
-        />
-        <image id="center-logo" href="./new.svg" preserveAspectRatio="xMidYMid meet" style="filter: brightness(0) invert(1);" />
-        <g class="course-on-ring" id="course-on-ring"></g>
+        <g id="ring-text" clip-path="url(#card-clip)"></g>
+
       </svg>
-    </main>
+    </div>
+
     <script>
       const svgNS = "http://www.w3.org/2000/svg";
-      const center = { x: 525, y: 1485 };
-      const minRadius = 20;
-      const maxRadius = 1480;
-      const radiusStep = 48;
+      const cx = 450, cy = 250;
 
-      const maxLineLength = 30;
-      const rawMenuLines = [
+      /* ── Chaotic micro-shifts (same rhythm as index.html) ─────────── */
+      const shifts = [0, -3, 5, -2, 4, -5, 3, -1, 6, -4];
+      function chaoticOffset(i, base) {
+        return base + shifts[i % shifts.length];
+      }
 
-        "",
-        "Курс 0",
-        "Стартер",
-        "Огород и дзадзыки",
-        "Курс 1",
-        "Пино Гриджио",
-        "Севиче из гребешка с тигриным молоком и сезонными фруктами",
-        "Курс 2",
-        "Рислинг",
-        "Галантин из рапаны со спаржей и голубым сыром",
-        "Курс 3",
-        "Санджовезе розе",
-        "Свекольное ризотто с малиной и козьим сыром",
-        "Курс 4",
-        "Сира",
-        "Баклажаны пармиджано с мороженым из таледжио и карамелизированным грецким орехом",
-        "антреме - сорбет лимонный/эстрагон/щавель - под сезонность",
-        "Курс 5",
-        "Пино Нуар",
-        "Стейк Торнедо Россини"
+      /* ── Info ─────────────────────────────────────────────────────────
+         cw=true  → sweep=1 (по часовой):    75% = верх
+         cw=false → sweep=0 (против часовой): 75% = низ
+      ─────────────────────────────────────────────────────────────────── */
+      const info = [
+        { text: "ПОП-АП РЕСТОРАН",
+          r: 110, cw: true,  base: 75, size: 15, ls: 3.0 },   // верх-центр
+
+        { text: "+7\u00A0495\u00A0555\u00A067\u00A032",
+          r: 148, cw: true,  base: 87, size: 15, ls: 4.0 },   // верх-право
+
+        { text: "RADIUS-POPUP.RU",
+          r: 184, cw: false, base: 75, size: 15, ls: 3.0 },   // низ-центр
+
+        { text: "ТОЛЬКО ПО ПРЕДВАРИТЕЛЬНОМУ БРОНИРОВАНИЮ",
+          r: 222, cw: true,  base: 62, size: 11, ls: 1.6 },   // верх-лево
+
+        { text: "СЕВАСТОПОЛЬ \u00B7 СЕЛО РОДНОЕ \u00B7 ВИНОДЕЛЬНЯ BELMAS",
+          r: 258, cw: true,  base: 45, size: 11, ls: 1.2 },   // лево (дуга CW 45% безопасна: r=258 выходит только вверх/вниз, но не влево)
       ];
 
-      function splitLongLine(line, maxLength) {
-        if (line.length <= maxLength) return [line];
+      /* ── Decorative rings ─────────────────────────────────────────── */
+      const ringShapes   = document.getElementById("ring-shapes");
+      const textRadiiSet = new Set(info.map(d => d.r));
 
-        const words = line.split(/\s+/);
-        const result = [];
-        let current = "";
 
-        words.forEach((word) => {
-          const candidate = current ? `${current} ${word}` : word;
-          if (candidate.length <= maxLength) {
-            current = candidate;
-          } else {
-            if (current) result.push(current);
-            current = word;
-          }
-        });
+      /* ── Logo ─────────────────────────────────────────────────────── */
+      const logoW = 148, logoH = logoW / (204.04 / 57.14);
+      const logo  = document.getElementById("center-logo");
+      logo.setAttribute("x",      cx - logoW / 2);
+      logo.setAttribute("y",      cy - logoH / 2);
+      logo.setAttribute("width",  logoW);
+      logo.setAttribute("height", logoH);
 
-        if (current) result.push(current);
-        return result;
-      }
+      /* ── Text on rings ────────────────────────────────────────────── */
+      const cardDefs = document.getElementById("card-defs");
+      const ringText  = document.getElementById("ring-text");
 
-      const lines = rawMenuLines.flatMap((line) => splitLongLine(line, maxLineLength));
-
-      function padLine(line) {
-        return "\u00A0".repeat(3) + line;
-      }
-
-      const ringDefs = document.getElementById("ring-defs");
-      const ringShapes = document.getElementById("ring-shapes");
-      const ringText = document.getElementById("course-on-ring");
-      const radii = [];
-
-      for (let radius = minRadius; radius <= maxRadius; radius += radiusStep) {
-        radii.push(radius);
-
-        const circle = document.createElementNS(svgNS, "circle");
-        circle.setAttribute("cx", String(center.x));
-        circle.setAttribute("cy", String(center.y));
-        circle.setAttribute("r", String(radius));
-        ringShapes.appendChild(circle);
-      }
-
-      // Clip bg to 5th ring
-      const bgClipCircle = document.getElementById("bg-clip-circle");
-      bgClipCircle.setAttribute("cx", String(center.x));
-      bgClipCircle.setAttribute("cy", String(center.y));
-      bgClipCircle.setAttribute("r", String(radii[4]));
-
-      // Place photo.png clipped to 4th ring, grayscale
-      const photoRadius = radii[3];
-      const photoClipCircle = document.getElementById("photo-clip-circle");
-      photoClipCircle.setAttribute("cx", String(center.x));
-      photoClipCircle.setAttribute("cy", String(center.y));
-      photoClipCircle.setAttribute("r", String(photoRadius));
-
-      const photoEl = document.getElementById("center-photo");
-      photoEl.setAttribute("x", String(center.x - photoRadius));
-      photoEl.setAttribute("y", String(center.y - photoRadius));
-      photoEl.setAttribute("width", String(photoRadius * 2));
-      photoEl.setAttribute("height", String(photoRadius * 2));
-
-      // Center new.svg logo
-      const logoEl = document.getElementById("center-logo");
-      const logoWidth = radii[3] * 1.68;
-      const logoHeight = logoWidth * (57.14 / 204.04);
-      logoEl.setAttribute("x", String(center.x - logoWidth / 2));
-      logoEl.setAttribute("y", String(center.y - logoHeight / 2));
-      logoEl.setAttribute("width", String(logoWidth));
-      logoEl.setAttribute("height", String(logoHeight));
-
-      // Labels on the page corners
-
-      const textRadii = radii.slice(4);
-      const topRadii = [...textRadii].reverse();
-      const topCapacity = topRadii.length;
-
-      // Group lines into courses (a course starts with a "Курс" line)
-      const courses = [];
-      let currentCourse = [];
-      lines.forEach((line) => {
-        if (/курс/i.test(line) && currentCourse.length > 0) {
-          courses.push(currentCourse);
-          currentCourse = [];
-        }
-        currentCourse.push(line);
-      });
-      if (currentCourse.length > 0) courses.push(currentCourse);
-
-      // Place courses on top side; if a course doesn't fit, move it and the rest to bottom
-      const topLines = [];
-      const bottomLines = [];
-      const topLineCourseIdx = [];
-      const bottomLineCourseIdx = [];
-      let overflow = false;
-      courses.forEach((course, ci) => {
-        const needed = course.length + (topLines.length > 0 ? 1 : 0);
-        if (!overflow && topLines.length + needed <= topCapacity) {
-          if (topLines.length > 0) { topLines.push(""); topLineCourseIdx.push(ci); }
-          course.forEach((l) => { topLines.push(l); topLineCourseIdx.push(ci); });
-        } else {
-          overflow = true;
-          if (bottomLines.length > 0) { bottomLines.push(""); bottomLineCourseIdx.push(ci); }
-          course.forEach((l) => { bottomLines.push(l); bottomLineCourseIdx.push(ci); });
-        }
-      });
-      const leftStartX = 0;
-      const searchSamples = 2048;
-
-      function getLeftEdgeOffsetTop(path) {
-        const totalLength = path.getTotalLength();
-        let bestLength = 0;
-        let bestDelta = Number.POSITIVE_INFINITY;
-
-        for (let i = 0; i <= searchSamples; i += 1) {
-          const length = (i / searchSamples) * totalLength;
-          const point = path.getPointAtLength(length);
-
-          if (point.y > center.y) continue;
-
-          const delta = Math.abs(point.x - leftStartX);
-          if (delta < bestDelta) {
-            bestDelta = delta;
-            bestLength = length;
-          }
-        }
-
-        return `${bestLength}`;
-      }
-
-      function getLeftEdgeOffsetBottom(path) {
-        const totalLength = path.getTotalLength();
-        let bestLength = 0;
-        let bestDelta = Number.POSITIVE_INFINITY;
-
-        for (let i = 0; i <= searchSamples; i += 1) {
-          const length = (i / searchSamples) * totalLength;
-          const point = path.getPointAtLength(length);
-
-          if (point.y < center.y) continue;
-
-          const delta = Math.abs(point.x - leftStartX);
-          if (delta < bestDelta) {
-            bestDelta = delta;
-            bestLength = length;
-          }
-        }
-
-        return `${bestLength}`;
-      }
-
-      function chaoticOffset(courseIndex, base) {
-        const offsets = [0, -3, 4, -2, 3, -4, 2, -1];
-        return base + offsets[courseIndex % offsets.length];
-      }
-
-      // Outer side, upper half — from largest ring inward
-      topLines.forEach((line, index) => {
-        const radius = topRadii[index];
-        const pathId = `ring-top-${index}`;
-
-        const path = document.createElementNS(svgNS, "path");
+      info.forEach(({ text, r, cw, base, size, ls }, i) => {
+        const pathId = `ring-${i}`;
+        const path   = document.createElementNS(svgNS, "path");
+        const sweep  = cw ? 1 : 0;
         path.setAttribute("id", pathId);
-        path.setAttribute(
-          "d",
-          `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
-        );
-        ringDefs.appendChild(path);
+        path.setAttribute("d",
+          `M ${cx + r} ${cy}` +
+          ` A ${r} ${r} 0 1 ${sweep} ${cx - r} ${cy}` +
+          ` A ${r} ${r} 0 1 ${sweep} ${cx + r} ${cy}`);
+        cardDefs.appendChild(path);
 
-        const text = document.createElementNS(svgNS, "text");
-        const textPath = document.createElementNS(svgNS, "textPath");
-        textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", `${chaoticOffset(topLineCourseIdx[index], 75)}%`);
-        textPath.setAttribute("text-anchor", "middle");
-        textPath.textContent = line;
-        if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
-        if (line === "меню") text.setAttribute("class", "menu-title");
-        text.appendChild(textPath);
-        ringText.appendChild(text);
-      });
+        const textEl = document.createElementNS(svgNS, "text");
+        textEl.setAttribute("fill",           "#ffffff");
+        textEl.setAttribute("font-family",    "'PT Mono', 'Courier New', monospace");
+        textEl.setAttribute("font-size",      size);
+        textEl.setAttribute("letter-spacing", ls);
+        textEl.setAttribute("opacity",        "0.90");
 
-      // Inner side, lower half — mirror the gap from top
-      const bottomRadii = [...textRadii];
-      const topGap = topCapacity - topLines.length;
-      const bottomStart = topGap;
-      bottomLines.forEach((line, index) => {
-        const radius = bottomRadii[Math.max(0, bottomStart + index)];
-        const pathId = `ring-bottom-${index}`;
+        const tp = document.createElementNS(svgNS, "textPath");
+        tp.setAttribute("href",        `#${pathId}`);
+        tp.setAttribute("startOffset", `${chaoticOffset(i, base)}%`);
+        tp.setAttribute("text-anchor", "middle");
+        tp.textContent = text;
 
-        const path = document.createElementNS(svgNS, "path");
-        path.setAttribute("id", pathId);
-        path.setAttribute(
-          "d",
-          `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y}`
-        );
-        ringDefs.appendChild(path);
-
-        const text = document.createElementNS(svgNS, "text");
-        const textPath = document.createElementNS(svgNS, "textPath");
-        textPath.setAttribute("href", `#${pathId}`);
-        textPath.setAttribute("startOffset", `${chaoticOffset(bottomLineCourseIdx[index], 75)}%`);
-        textPath.setAttribute("text-anchor", "middle");
-        textPath.textContent = line;
-        if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
-        if (line === "меню") text.setAttribute("class", "menu-title");
-        text.appendChild(textPath);
-        ringText.appendChild(text);
+        textEl.appendChild(tp);
+        ringText.appendChild(textEl);
       });
     </script>
   </body>
