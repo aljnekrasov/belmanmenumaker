@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu Editor</title>
+    <style>
+      /* ── Reset ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --ink: #151515;
+        --paper: #fbfbfb;
+        --page-w: 105mm;
+        --page-h: 297mm;
+        --panel: 320px;
+        --bg: #1e1e2e;
+        --surface: #2a2a3e;
+        --border: #3a3a50;
+        --accent: #7c6af7;
+        --text: #e0e0f0;
+        --muted: #888;
+      }
+
+      html, body {
+        height: 100%;
+        font-family: "Inter", "SF Pro Text", -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      /* ── Layout ── */
+      .app {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ── Editor panel ── */
+      .editor {
+        width: var(--panel);
+        min-width: var(--panel);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .editor-header {
+        padding: 18px 20px 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: var(--text);
+        flex-shrink: 0;
+      }
+
+      .editor-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .field label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .field textarea {
+        width: 100%;
+        height: 320px;
+        resize: vertical;
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 12.5px;
+        line-height: 1.6;
+        font-family: "SF Mono", "Fira Code", monospace;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .field textarea:focus { border-color: var(--accent); }
+
+      .field-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 5px;
+        line-height: 1.4;
+      }
+
+      /* ── Slider field ── */
+      .slider-field label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .slider-field label span {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        text-transform: none;
+        letter-spacing: 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .slider-field input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        outline: none;
+        cursor: pointer;
+      }
+      .slider-field input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        transition: transform 0.1s;
+      }
+      .slider-field input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+      .slider-field input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border: none;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+      }
+
+      .editor-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .btn-print {
+        width: 100%;
+        padding: 11px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.3px;
+        transition: opacity 0.15s;
+      }
+      .btn-print:hover { opacity: 0.85; }
+
+      /* ── Preview area ── */
+      .preview {
+        flex: 1;
+        overflow: auto;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 24px;
+      }
+
+      /* ── Menu page ── */
+      .page {
+        position: relative;
+        width: var(--page-w);
+        height: var(--page-h);
+        background: var(--paper);
+        color: var(--ink);
+        overflow: hidden;
+        flex-shrink: 0;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      }
+
+      .rings {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .ring-shapes circle {
+        fill: none;
+        stroke: rgba(255,255,255,0.15);
+        stroke-width: 1;
+      }
+
+      .course-on-ring {
+        fill: #111;
+      }
+
+      /* ── Print ── */
+      @page { size: 105mm 297mm; margin: 0; }
+
+      @media print {
+        html, body { background: #fff; height: auto; }
+        .app { display: block; height: auto; }
+        .editor { display: none !important; }
+        .preview {
+          display: block;
+          padding: 0;
+          overflow: visible;
+        }
+        .page {
+          width: 105mm;
+          height: 297mm;
+          box-shadow: none;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+
+      <!-- ── Editor panel ── -->
+      <aside class="editor">
+        <div class="editor-header">Редактор меню</div>
+        <div class="editor-body">
+
+          <div class="field">
+            <label>Содержание меню</label>
+            <textarea id="menuText">
+Курс 0
+Стартер
+Огород и дзадзыки
+
+Курс 1
+Пино Гриджио
+Севиче из гребешка с тигриным молоком и сезонными фруктами
+
+Курс 2
+Рислинг
+Галантин из рапаны со спаржей и голубым сыром
+
+Курс 3
+Санджовезе розе
+Свекольное ризотто с малиной и козьим сыром
+
+Курс 4
+Сира
+Баклажаны пармиджано с мороженым из таледжио и карамелизированным грецким орехом
+антреме - сорбет лимонный/эстрагон/щавель - под сезонность
+
+Курс 5
+Пино Нуар
+Стейк Торнедо Россини</textarea>
+            <div class="field-hint">
+              Каждый курс начинается со строки «Курс N».<br>
+              <strong style="color:var(--text)">$</strong> — прозрачный пустой слот на кольце.
+            </div>
+          </div>
+
+          <div class="slider-field">
+            <label>Размер шрифта <span id="fontSizeVal">29</span></label>
+            <input type="range" id="fontSize" value="29" min="10" max="60" step="1"
+              oninput="document.getElementById('fontSizeVal').textContent = this.value" />
+          </div>
+
+          <div class="slider-field">
+            <label>Символов в строке <span id="maxLineLenVal">30</span></label>
+            <input type="range" id="maxLineLen" value="30" min="10" max="80" step="1"
+              oninput="document.getElementById('maxLineLenVal').textContent = this.value" />
+          </div>
+
+        </div>
+        <div class="editor-footer">
+          <button class="btn-print" onclick="window.print()">Сохранить PDF / Печать</button>
+        </div>
+      </aside>
+
+      <!-- ── Preview ── -->
+      <div class="preview">
+        <main class="page">
+          <svg
+            class="rings"
+            id="mainSvg"
+            viewBox="0 0 1050 2970"
+            aria-hidden="true"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs id="ring-defs">
+              <clipPath id="bg-clip"><circle id="bg-clip-circle" /></clipPath>
+              <clipPath id="photo-clip"><circle id="photo-clip-circle" /></clipPath>
+              <filter id="grayscale">
+                <feColorMatrix type="saturate" values="0" />
+              </filter>
+            </defs>
+            <image
+              id="bg-image"
+              href="./bg.png"
+              x="0" y="0"
+              width="1050" height="2970"
+              clip-path="url(#bg-clip)"
+              preserveAspectRatio="xMidYMid slice"
+            />
+            <g class="ring-shapes" id="ring-shapes"></g>
+            <image
+              id="center-photo"
+              href="./photo.png"
+              clip-path="url(#photo-clip)"
+              filter="url(#grayscale)"
+              preserveAspectRatio="xMidYMid slice"
+            />
+            <image
+              id="center-logo"
+              href="./new.svg"
+              preserveAspectRatio="xMidYMid meet"
+              style="filter: brightness(0) invert(1);"
+            />
+            <g class="course-on-ring" id="course-on-ring"></g>
+          </svg>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const svgNS = "http://www.w3.org/2000/svg";
+      const center = { x: 525, y: 1485 };
+      const minRadius = 20;
+      const maxRadius = 1480;
+      const radiusStep = 48;
+
+      // ── Build static rings once ──
+      const ringShapes = document.getElementById("ring-shapes");
+      const radii = [];
+      for (let r = minRadius; r <= maxRadius; r += radiusStep) {
+        radii.push(r);
+        const c = document.createElementNS(svgNS, "circle");
+        c.setAttribute("cx", String(center.x));
+        c.setAttribute("cy", String(center.y));
+        c.setAttribute("r", String(r));
+        ringShapes.appendChild(c);
+      }
+
+      // ── Clip / photo / logo (static) ──
+      const bgClipCircle = document.getElementById("bg-clip-circle");
+      bgClipCircle.setAttribute("cx", String(center.x));
+      bgClipCircle.setAttribute("cy", String(center.y));
+      bgClipCircle.setAttribute("r", String(radii[4]));
+
+      const photoRadius = radii[3];
+      const photoClipCircle = document.getElementById("photo-clip-circle");
+      photoClipCircle.setAttribute("cx", String(center.x));
+      photoClipCircle.setAttribute("cy", String(center.y));
+      photoClipCircle.setAttribute("r", String(photoRadius));
+
+      const photoEl = document.getElementById("center-photo");
+      photoEl.setAttribute("x", String(center.x - photoRadius));
+      photoEl.setAttribute("y", String(center.y - photoRadius));
+      photoEl.setAttribute("width", String(photoRadius * 2));
+      photoEl.setAttribute("height", String(photoRadius * 2));
+
+      const logoEl = document.getElementById("center-logo");
+      const logoWidth = radii[3] * 1.68;
+      const logoHeight = logoWidth * (57.14 / 204.04);
+      logoEl.setAttribute("x", String(center.x - logoWidth / 2));
+      logoEl.setAttribute("y", String(center.y - logoHeight / 2));
+      logoEl.setAttribute("width", String(logoWidth));
+      logoEl.setAttribute("height", String(logoHeight));
+
+      // ── Helpers ──
+      function splitLongLine(line, maxLen) {
+        if (line.length <= maxLen) return [line];
+        const words = line.split(/\s+/);
+        const result = [];
+        let cur = "";
+        words.forEach((w) => {
+          const cand = cur ? `${cur} ${w}` : w;
+          if (cand.length <= maxLen) { cur = cand; }
+          else { if (cur) result.push(cur); cur = w; }
+        });
+        if (cur) result.push(cur);
+        return result;
+      }
+
+      function chaoticOffset(courseIndex, base) {
+        const offsets = [0, -3, 4, -2, 3, -4, 2, -1];
+        return base + offsets[courseIndex % offsets.length];
+      }
+
+      // ── Render (called on every input change) ──
+      function render() {
+        const fontSize   = parseInt(document.getElementById("fontSize").value, 10)   || 29;
+        const maxLineLen = parseInt(document.getElementById("maxLineLen").value, 10) || 30;
+        const rawText    = document.getElementById("menuText").value;
+
+        // Apply font size
+        document.getElementById("course-on-ring").style.fontSize = fontSize + "px";
+
+        // Parse raw text into menu lines
+        // "$" alone on a line = transparent spacer (occupies a ring slot, renders invisible)
+        const SPACER = "\u200B"; // zero-width space — invisible when rendered
+        const rawMenuLines = rawText.split("\n");
+        const lines = rawMenuLines.flatMap((line) => {
+          const trimmed = line.trim();
+          if (trimmed === "$") return [SPACER];
+          return splitLongLine(trimmed, maxLineLen);
+        });
+
+        // Group into courses
+        const courses = [];
+        let cur = [];
+        lines.forEach((line) => {
+          if (/курс/i.test(line) && cur.length > 0) {
+            courses.push(cur);
+            cur = [];
+          }
+          if (line !== "") cur.push(line); // SPACER (\u200B) is non-empty, so it's included
+        });
+        if (cur.length > 0) courses.push(cur);
+
+        const textRadii    = radii.slice(4, -1); // skip outermost ring
+        const topRadii     = [...textRadii].reverse();
+        const topCapacity  = topRadii.length;
+
+        const topLines    = [], bottomLines    = [];
+        const topIdx      = [], bottomIdx      = [];
+        let overflow = false;
+        courses.forEach((course, ci) => {
+          const needed = course.length + (topLines.length > 0 ? 1 : 0);
+          if (!overflow && topLines.length + needed <= topCapacity) {
+            if (topLines.length > 0) { topLines.push(""); topIdx.push(ci); }
+            course.forEach((l) => { topLines.push(l); topIdx.push(ci); });
+          } else {
+            overflow = true;
+            if (bottomLines.length > 0) { bottomLines.push(""); bottomIdx.push(ci); }
+            course.forEach((l) => { bottomLines.push(l); bottomIdx.push(ci); });
+          }
+        });
+
+        // Clear previous text paths and text
+        const ringDefs = document.getElementById("ring-defs");
+        const ringText = document.getElementById("course-on-ring");
+        // Remove old path defs
+        [...ringDefs.querySelectorAll("path")].forEach((p) => p.remove());
+        ringText.innerHTML = "";
+
+        function addTextOnRing(line, radius, pathId, offset, courseIdx) {
+          const path = document.createElementNS(svgNS, "path");
+          path.setAttribute("id", pathId);
+          path.setAttribute("d", offset > 0
+            ? `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 1 ${center.x + radius} ${center.y}`
+            : `M ${center.x + radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x - radius} ${center.y} A ${radius} ${radius} 0 1 0 ${center.x + radius} ${center.y}`
+          );
+          ringDefs.appendChild(path);
+
+          const text = document.createElementNS(svgNS, "text");
+          const tp   = document.createElementNS(svgNS, "textPath");
+          tp.setAttribute("href", `#${pathId}`);
+          tp.setAttribute("startOffset", `${chaoticOffset(courseIdx, 75)}%`);
+          tp.setAttribute("text-anchor", "middle");
+          tp.textContent = line;
+          if (/курс/i.test(line)) text.setAttribute("font-weight", "bold");
+          text.appendChild(tp);
+          ringText.appendChild(text);
+        }
+
+        topLines.forEach((line, i) => {
+          addTextOnRing(line, topRadii[i], `ring-top-${i}`, 1, topIdx[i] ?? 0);
+        });
+
+        const bottomRadii = [...textRadii];
+        const topGap = topCapacity - topLines.length;
+        bottomLines.forEach((line, i) => {
+          const r = bottomRadii[Math.max(0, topGap + i)];
+          addTextOnRing(line, r, `ring-bottom-${i}`, -1, bottomIdx[i] ?? 0);
+        });
+      }
+
+      // ── Wire up inputs ──
+      document.getElementById("menuText").addEventListener("input", render);
+      document.getElementById("fontSize").addEventListener("input", render);
+      document.getElementById("maxLineLen").addEventListener("input", render);
+
+      // ── Initial render ──
+      render();
+    </script>
+  </body>
+</html>
