@@ -1,0 +1,780 @@
+/* =========================================================
+   Radius Booking Form Styles
+   Scoped under .rb-form to avoid conflicts
+   ========================================================= */
+
+/* --- Variables --- */
+.rb-form {
+  --green: #2F4A3F;
+  --green-light: #3a5c4d;
+  --olive: #7A8F7A;
+  --gold: #C5A55A;
+  --gold-light: #d4b96e;
+  --cream: #FAF8F4;
+  --dark: #1a1a1a;
+  --white: #ffffff;
+  --error: #c0392b;
+  --error-bg: #fdecea;
+  --radius: 8px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+
+  font-family: 'PT Sans', sans-serif;
+  color: var(--dark);
+  background: var(--cream);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  box-sizing: border-box;
+}
+
+.rb-form *, .rb-form *::before, .rb-form *::after {
+  box-sizing: border-box;
+}
+
+/* --- Typography --- */
+.rb-form h2 {
+  font-family: 'PT Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  color: var(--green);
+}
+
+.rb-form label,
+.rb-form .rb-label {
+  font-family: 'PT Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--olive);
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ==========================================================
+   STEP INDICATORS
+   ========================================================== */
+.rb-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+  gap: 0;
+}
+
+.rb-steps__item {
+  display: flex;
+  align-items: center;
+}
+
+.rb-steps__circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--olive);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'PT Mono', monospace;
+  font-size: 14px;
+  color: var(--olive);
+  background: var(--white);
+  transition: all .25s ease;
+  flex-shrink: 0;
+}
+
+.rb-steps__item.is-active .rb-steps__circle {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--white);
+}
+
+.rb-steps__item.is-done .rb-steps__circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white);
+}
+
+.rb-steps__line {
+  width: 40px;
+  height: 2px;
+  background: var(--olive);
+  opacity: .3;
+  margin: 0 4px;
+  transition: opacity .25s ease;
+}
+
+.rb-steps__item.is-done + .rb-steps__item .rb-steps__line,
+.rb-steps__item.is-done .rb-steps__line {
+  opacity: 1;
+  background: var(--gold);
+}
+
+/* ==========================================================
+   STEP PANELS
+   ========================================================== */
+.rb-step {
+  display: none;
+}
+
+.rb-step.is-visible {
+  display: block;
+  animation: rbFadeIn .3s ease;
+}
+
+@keyframes rbFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================
+   CALENDAR
+   ========================================================== */
+.rb-calendar {
+  margin-bottom: 24px;
+}
+
+.rb-calendar__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.rb-calendar__nav-btn {
+  background: none;
+  border: 1px solid var(--olive);
+  border-radius: var(--radius);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--green);
+  font-size: 18px;
+  transition: background .2s, border-color .2s;
+}
+
+.rb-calendar__nav-btn:hover {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--white);
+}
+
+.rb-calendar__nav-btn:disabled {
+  opacity: .3;
+  cursor: default;
+  background: none;
+  color: var(--olive);
+  border-color: var(--olive);
+}
+
+.rb-calendar__title {
+  font-family: 'PT Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: capitalize;
+}
+
+.rb-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.rb-calendar__weekday {
+  font-family: 'PT Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--olive);
+  padding: 8px 0;
+  letter-spacing: .5px;
+}
+
+.rb-calendar__day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: default;
+  border: none;
+  background: none;
+  color: var(--dark);
+  transition: all .2s ease;
+  padding: 0;
+}
+
+.rb-calendar__day.is-empty {
+  visibility: hidden;
+}
+
+.rb-calendar__day.is-past,
+.rb-calendar__day.is-unavailable {
+  color: #ccc;
+}
+
+.rb-calendar__day.is-available {
+  cursor: pointer;
+  background: transparent;
+  color: var(--dark);
+  font-weight: 700;
+  position: relative;
+}
+
+.rb-calendar__day.is-available::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.rb-calendar__day.is-available:hover {
+  background: var(--gold-light);
+  color: var(--white);
+}
+
+.rb-calendar__day.is-available:hover::after {
+  background: var(--white);
+}
+
+.rb-calendar__day.is-selected {
+  background: var(--gold);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.rb-calendar__day.is-selected::after {
+  background: var(--white);
+}
+
+.rb-calendar__day.is-today {
+  box-shadow: inset 0 0 0 2px var(--green);
+  border-radius: 50%;
+}
+
+/* ==========================================================
+   EVENT / SLOT CARDS
+   ========================================================== */
+.rb-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.rb-slot {
+  background: var(--white);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.rb-slot:hover {
+  border-color: var(--gold-light);
+}
+
+.rb-slot.is-selected {
+  border-color: var(--gold);
+  box-shadow: 0 2px 16px rgba(197,165,90,.25);
+}
+
+.rb-slot__time {
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.rb-slot__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+
+.rb-slot__desc {
+  font-size: 14px;
+  color: var(--olive);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.rb-slot__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'PT Mono', monospace;
+  font-size: 13px;
+}
+
+.rb-slot__price {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.rb-slot__seats {
+  color: var(--olive);
+}
+
+.rb-slot__seats.is-low {
+  color: var(--error);
+}
+
+/* ==========================================================
+   GUEST COUNTER
+   ========================================================== */
+.rb-counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rb-counter__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  background: var(--white);
+  color: var(--green);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  font-family: 'PT Mono', monospace;
+  line-height: 1;
+  padding: 0;
+}
+
+.rb-counter__btn:hover {
+  background: var(--green);
+  color: var(--white);
+}
+
+.rb-counter__btn:disabled {
+  opacity: .3;
+  cursor: default;
+  background: var(--white);
+  color: var(--green);
+}
+
+.rb-counter__value {
+  font-family: 'PT Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--green);
+  min-width: 40px;
+  text-align: center;
+}
+
+.rb-counter__label {
+  font-size: 14px;
+  color: var(--olive);
+  margin-left: 4px;
+}
+
+/* ==========================================================
+   DIETARY CHECKBOXES
+   ========================================================== */
+.rb-dietary {
+  margin-bottom: 24px;
+}
+
+.rb-dietary__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.rb-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--white);
+  border: 1px solid #e5e5e0;
+  transition: border-color .2s, background .2s;
+  user-select: none;
+}
+
+.rb-check:hover {
+  border-color: var(--olive);
+}
+
+.rb-check input[type="checkbox"] {
+  display: none;
+}
+
+.rb-check__box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid var(--olive);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .2s, border-color .2s;
+}
+
+.rb-check input[type="checkbox"]:checked + .rb-check__box {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.rb-check input[type="checkbox"]:checked + .rb-check__box::after {
+  content: '';
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--white);
+  border-bottom: 2px solid var(--white);
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+.rb-check__text {
+  font-size: 14px;
+  color: var(--dark);
+}
+
+/* ==========================================================
+   INPUT FIELDS
+   ========================================================== */
+.rb-field {
+  margin-bottom: 20px;
+}
+
+.rb-input,
+.rb-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: var(--radius);
+  font-family: 'PT Sans', sans-serif;
+  font-size: 15px;
+  color: var(--dark);
+  background: var(--white);
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+
+.rb-input:focus,
+.rb-textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(47,74,63,.12);
+}
+
+.rb-input.is-error,
+.rb-textarea.is-error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.1);
+}
+
+.rb-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.rb-input::placeholder,
+.rb-textarea::placeholder {
+  color: #bbb;
+}
+
+/* ==========================================================
+   CONSENT CHECKBOXES
+   ========================================================== */
+.rb-consent {
+  margin-bottom: 24px;
+}
+
+.rb-consent .rb-check {
+  background: transparent;
+  border: none;
+  padding: 6px 0;
+}
+
+.rb-consent .rb-check__text {
+  font-size: 13px;
+  color: var(--olive);
+  line-height: 1.5;
+}
+
+.rb-consent .rb-check__text a {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+/* ==========================================================
+   SUMMARY
+   ========================================================== */
+.rb-summary {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.rb-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0ede8;
+  font-size: 14px;
+}
+
+.rb-summary__row:last-child {
+  border-bottom: none;
+}
+
+.rb-summary__key {
+  color: var(--olive);
+}
+
+.rb-summary__val {
+  font-weight: 700;
+  color: var(--dark);
+  text-align: right;
+}
+
+.rb-summary__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 2px solid var(--green);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.rb-summary__total-label {
+  color: var(--green);
+}
+
+.rb-summary__total-value {
+  color: var(--gold);
+  font-family: 'PT Mono', monospace;
+  font-size: 22px;
+}
+
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
+.rb-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.rb-btn {
+  font-family: 'PT Mono', monospace;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 28px;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+.rb-btn:active {
+  transform: scale(.97);
+}
+
+.rb-btn--primary {
+  background: var(--gold);
+  color: var(--white);
+  flex: 1;
+}
+
+.rb-btn--primary:hover {
+  background: var(--gold-light);
+}
+
+.rb-btn--secondary {
+  background: transparent;
+  border: 1px solid var(--olive);
+  color: var(--olive);
+}
+
+.rb-btn--secondary:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.rb-btn--submit {
+  background: var(--green);
+  color: var(--white);
+  flex: 1;
+}
+
+.rb-btn--submit:hover {
+  background: var(--green-light);
+}
+
+.rb-btn:disabled {
+  opacity: .5;
+  cursor: default;
+  transform: none;
+}
+
+/* Spinner */
+.rb-btn .rb-spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: rbSpin .6s linear infinite;
+}
+
+.rb-btn.is-loading .rb-spinner {
+  display: inline-block;
+}
+
+.rb-btn.is-loading {
+  pointer-events: none;
+  opacity: .7;
+}
+
+@keyframes rbSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================
+   ERROR MESSAGES
+   ========================================================== */
+.rb-error-inline {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 4px;
+  display: none;
+}
+
+.rb-error-inline.is-visible {
+  display: block;
+}
+
+.rb-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--error);
+  color: var(--white);
+  font-size: 14px;
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  z-index: 10000;
+  opacity: 0;
+  transition: transform .3s ease, opacity .3s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.rb-toast.is-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================
+   LOADING PLACEHOLDER
+   ========================================================== */
+.rb-loading {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--olive);
+  font-size: 14px;
+}
+
+.rb-loading__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e5e0;
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: rbSpin .7s linear infinite;
+  margin: 0 auto 12px;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 480px) {
+  .rb-form {
+    padding: 20px 16px;
+  }
+
+  .rb-steps__line {
+    width: 24px;
+  }
+
+  .rb-steps__circle {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .rb-calendar__grid {
+    gap: 2px;
+  }
+
+  .rb-calendar__day {
+    font-size: 13px;
+  }
+
+  .rb-dietary__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rb-buttons {
+    flex-direction: column;
+  }
+
+  .rb-btn {
+    width: 100%;
+  }
+
+  .rb-summary__total-value {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .rb-steps__line {
+    width: 16px;
+  }
+
+  .rb-slot__meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

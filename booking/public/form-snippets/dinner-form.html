@@ -1,0 +1,17 @@
+<!-- Radius Booking — Dinner Form -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=PT+Mono&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="booking.css">
+
+<div id="dinner-booking" class="rb-form" data-type="dinner" data-api="/booking/api">
+  <!-- Form content is rendered by booking.js -->
+</div>
+
+<script src="booking.js"></script>
+<script>
+  initBookingForm({
+    formSelector: '#dinner-booking',
+    type: 'dinner',
+    apiBase: '/booking/api'
+  });
+</script>

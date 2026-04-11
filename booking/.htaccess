@@ -1,0 +1,16 @@
+# Защита служебных файлов и директорий
+
+<FilesMatch "\.(log|sql|md|json|lock|example\.php)$">
+    Require all denied
+</FilesMatch>
+
+<Files "config.php">
+    Require all denied
+</Files>
+
+# Защита директорий
+RedirectMatch 403 ^/booking/lib/
+RedirectMatch 403 ^/booking/cron/
+RedirectMatch 403 ^/booking/migrations/
+RedirectMatch 403 ^/booking/logs/
+RedirectMatch 403 ^/booking/templates/

@@ -6,6 +6,7 @@
 <title>Радиус — поп-ап ресторан при винодельне</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/booking/public/form-snippets/booking.css">
 <style>
 :root {
   --green: #2F4A3F;
@@ -993,11 +994,25 @@ footer p { font-size: 14px; line-height: 1.6; max-width: 360px; }
 <!-- ═══ BOOKING ═══ -->
 <section class="booking" id="booking">
   <div class="container">
-    <div class="booking-inner">
+    <div class="section-tag">05 — Бронирование</div>
+    <h2 class="section-title">Только по<br>предварительной записи</h2>
+    <p style="font-size:18px;color:#555;line-height:1.7;max-width:640px;margin-bottom:32px;">«Радиус» — это место, где вкус становится языком семьи, а каждый гость — её частью. Выберите формат и забронируйте посещение.</p>
+
+    <!-- Переключатель формата -->
+    <div class="booking-tabs" style="display:flex;gap:0;margin-bottom:40px;">
+      <button class="booking-tab is-active" data-target="dinner-booking" style="flex:1;padding:16px 24px;background:var(--green);color:var(--gold);border:2px solid var(--green);font-family:'PT Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .3s;">Гастроужин «7 чувств»</button>
+      <button class="booking-tab" data-target="tasting-booking" style="flex:1;padding:16px 24px;background:transparent;color:var(--green);border:2px solid var(--green);font-family:'PT Mono',monospace;font-size:13px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .3s;">Дегустация вин</button>
+    </div>
+
+    <!-- Форма бронирования ужина -->
+    <div id="dinner-booking" class="rb-form" data-type="dinner" data-api="/booking/api"></div>
+
+    <!-- Форма бронирования дегустации -->
+    <div id="tasting-booking" class="rb-form" data-type="tasting" data-api="/booking/api" style="display:none;"></div>
+
+    <!-- Информация и правила -->
+    <div class="booking-inner" style="margin-top:64px;">
       <div class="booking-info">
-        <div class="section-tag">05 — Бронирование</div>
-        <h2 class="section-title">Только по<br>предварительной записи</h2>
-        <p>«Радиус» — это место, где вкус становится языком семьи, а каждый гость — её частью. Для комфортного посещения мы можем предложить трансфер наших партнёров.</p>
         <div class="booking-details">
           <div class="booking-detail">
             <span class="label">Где</span>
@@ -1028,7 +1043,6 @@ footer p { font-size: 14px; line-height: 1.6; max-width: 360px; }
             <li>Отмена брони возможна за 48 часов до мероприятия</li>
           </ul>
         </div>
-        <a href="#" class="btn-book">Оставить заявку</a>
       </div>
       <div class="booking-visual">
         <img src="img/landview2.png" alt="Вид на территорию винодельни">
@@ -1089,6 +1103,32 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+// Booking tabs switching
+document.querySelectorAll('.booking-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.booking-tab').forEach(t => {
+      t.classList.remove('is-active');
+      t.style.background = 'transparent';
+      t.style.color = 'var(--green)';
+    });
+    tab.classList.add('is-active');
+    tab.style.background = 'var(--green)';
+    tab.style.color = 'var(--gold)';
+
+    const targetId = tab.dataset.target;
+    document.querySelectorAll('.rb-form').forEach(f => f.style.display = 'none');
+    const target = document.getElementById(targetId);
+    if (target) target.style.display = '';
+  });
+});
+</script>
+
+<!-- Booking System -->
+<script src="/booking/public/form-snippets/booking.js"></script>
+<script>
+  initBookingForm({ formSelector: '#dinner-booking', type: 'dinner', apiBase: '/booking/api' });
+  initBookingForm({ formSelector: '#tasting-booking', type: 'tasting', apiBase: '/booking/api' });
 </script>
 </body>
 </html>

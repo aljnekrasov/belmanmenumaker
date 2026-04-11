@@ -1,0 +1,17 @@
+<!-- Radius Booking — Tasting Form -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=PT+Mono&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="booking.css">
+
+<div id="tasting-booking" class="rb-form" data-type="tasting" data-api="/booking/api">
+  <!-- Form content is rendered by booking.js -->
+</div>
+
+<script src="booking.js"></script>
+<script>
+  initBookingForm({
+    formSelector: '#tasting-booking',
+    type: 'tasting',
+    apiBase: '/booking/api'
+  });
+</script>

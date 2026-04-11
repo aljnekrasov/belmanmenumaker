@@ -1,0 +1,4 @@
+.DS_Store
+booking/config.php
+booking/logs/
+booking/vendor/

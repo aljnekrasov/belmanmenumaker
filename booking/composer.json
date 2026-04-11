@@ -1,0 +1,11 @@
+{
+    "name": "radius/booking",
+    "description": "Система бронирования ресторана Радиус",
+    "require": {
+        "php": ">=8.1",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    }
+}
