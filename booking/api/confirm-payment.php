@@ -14,6 +14,7 @@ if (file_exists($autoload)) {
     require_once __DIR__ . '/../lib/mailer.php';
 }
 
+header('Content-Type: text/html; charset=utf-8');
 $token = $_GET['token'] ?? $_POST['token'] ?? '';
 
 if (empty($token)) {

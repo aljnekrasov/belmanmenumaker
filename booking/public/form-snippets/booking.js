@@ -481,7 +481,9 @@ function initBookingForm(opts) {
       name: state.name,
       phone: state.phone,
       email: state.email,
-      comment: state.comment
+      comment: state.comment,
+      agree_terms: els.agreeTerms.checked,
+      agree_privacy: els.agreePrivacy.checked
     };
 
     fetch(apiBase + '/create-booking.php', {

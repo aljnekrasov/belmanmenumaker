@@ -33,9 +33,11 @@ $provider = $service->getPaymentProvider();
 // 5. Отправить письма клиенту и админу
 // 6. Вернуть HTTP 200
 
+header('Content-Type: application/json; charset=utf-8');
+
 if (!$provider->verifyWebhook($rawBody, $headers)) {
     http_response_code(403);
-    echo json_encode(['error' => 'Invalid signature']);
+    echo json_encode(['error' => 'Invalid signature'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -47,4 +49,4 @@ $paymentData = $provider->parseWebhook($rawBody);
 // Отправить письма
 
 http_response_code(200);
-echo json_encode(['ok' => true]);
+echo json_encode(['ok' => true], JSON_UNESCAPED_UNICODE);
