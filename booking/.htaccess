@@ -11,6 +11,7 @@
 # Защита директорий
 RedirectMatch 403 ^/booking/lib/
 RedirectMatch 403 ^/booking/cron/
-RedirectMatch 403 ^/booking/migrations/
+# Временно открыт setup.php — УДАЛИТЬ после установки!
+RedirectMatch 403 ^/booking/migrations/(?!setup\.php)
 RedirectMatch 403 ^/booking/logs/
 RedirectMatch 403 ^/booking/templates/

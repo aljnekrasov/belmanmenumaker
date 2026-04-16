@@ -705,6 +705,47 @@
 }
 
 /* ==========================================================
+   SUCCESS SCREEN
+   ========================================================== */
+.rb-success {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.rb-success__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--gold);
+  font-size: 36px;
+  line-height: 72px;
+  margin: 0 auto 24px;
+}
+
+.rb-success__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.rb-success__text {
+  font-size: 15px;
+  color: var(--olive);
+  margin-bottom: 32px;
+}
+
+.rb-success__details {
+  text-align: left;
+  max-width: 400px;
+  margin: 0 auto;
+  border: 1px solid rgba(47,74,63,.1);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+}
+
+/* ==========================================================
    LOADING PLACEHOLDER
    ========================================================== */
 .rb-loading {

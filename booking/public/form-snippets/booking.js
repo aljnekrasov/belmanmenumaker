@@ -150,15 +150,23 @@ function initBookingForm(opts) {
         '<button class="rb-btn rb-btn--secondary" data-action="prev">\u041D\u0430\u0437\u0430\u0434</button>' +
         '<button class="rb-btn rb-btn--submit" data-action="submit">' +
           '<span class="rb-spinner"></span>' +
-          '\u041E\u043F\u043B\u0430\u0442\u0438\u0442\u044C \u0438 \u0437\u0430\u0431\u0440\u043E\u043D\u0438\u0440\u043E\u0432\u0430\u0442\u044C' +
+          '\u0417\u0430\u0431\u0440\u043E\u043D\u0438\u0440\u043E\u0432\u0430\u0442\u044C' +
         '</button>' +
       '</div>' +
+      '</div>';
+
+    /* Success screen */
+    var successScreen = '<div class="rb-success" id="rb-success" style="display:none;">' +
+      '<div class="rb-success__icon">\u2713</div>' +
+      '<h2 class="rb-success__title">\u0411\u0440\u043E\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u0435 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043D\u043E!</h2>' +
+      '<p class="rb-success__text" id="rb-success-text"></p>' +
+      '<div class="rb-success__details" id="rb-success-details"></div>' +
       '</div>';
 
     /* Toast container */
     var toast = '<div class="rb-toast" id="rb-toast"></div>';
 
-    root.innerHTML = stepsHtml + step1 + step2 + step3 + step4 + toast;
+    root.innerHTML = stepsHtml + step1 + step2 + step3 + step4 + successScreen + toast;
     cacheEls();
   }
 
@@ -493,8 +501,8 @@ function initBookingForm(opts) {
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.ok && data.data && data.data.payment_url) {
-        window.location.href = data.data.payment_url;
+      if (data.ok && data.data && data.data.confirmed) {
+        showSuccess(data.data);
       } else {
         showToast((data.error && data.error.message) || '\u041E\u0448\u0438\u0431\u043A\u0430 \u043F\u0440\u0438 \u0441\u043E\u0437\u0434\u0430\u043D\u0438\u0438 \u0431\u0440\u043E\u043D\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044F');
         state.submitting = false;
@@ -506,6 +514,33 @@ function initBookingForm(opts) {
       state.submitting = false;
       if (btn) btn.classList.remove('is-loading');
     });
+  }
+
+  /* ==========================================================
+     SUCCESS SCREEN
+     ========================================================== */
+  function showSuccess(data) {
+    // Hide steps and stepper
+    root.querySelectorAll('.rb-step, .rb-steps').forEach(function(el) {
+      el.style.display = 'none';
+    });
+    var successEl = root.querySelector('#rb-success');
+    if (successEl) {
+      successEl.style.display = 'block';
+      var textEl = root.querySelector('#rb-success-text');
+      if (textEl) {
+        textEl.textContent = '\u041F\u0438\u0441\u044C\u043C\u043E \u0441 \u043F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043D\u0438\u0435\u043C \u043E\u0442\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043E \u043D\u0430 ' + escHtml(data.email || '');
+      }
+      var detailsEl = root.querySelector('#rb-success-details');
+      if (detailsEl) {
+        detailsEl.innerHTML =
+          '<div class="rb-summary__row"><span class="rb-summary__key">\u0421\u043E\u0431\u044B\u0442\u0438\u0435</span><span class="rb-summary__val">' + escHtml(data.event_title || '') + '</span></div>' +
+          '<div class="rb-summary__row"><span class="rb-summary__key">\u0414\u0430\u0442\u0430</span><span class="rb-summary__val">' + formatDateRu(data.event_date || '') + '</span></div>' +
+          '<div class="rb-summary__row"><span class="rb-summary__key">\u0412\u0440\u0435\u043C\u044F</span><span class="rb-summary__val">' + escHtml(data.event_time || '') + '</span></div>' +
+          '<div class="rb-summary__row"><span class="rb-summary__key">\u0413\u043E\u0441\u0442\u0438</span><span class="rb-summary__val">' + (data.guests || '') + '</span></div>' +
+          '<div class="rb-summary__row"><span class="rb-summary__key">\u0418\u043C\u044F</span><span class="rb-summary__val">' + escHtml(data.name || '') + '</span></div>';
+      }
+    }
   }
 
   /* ==========================================================

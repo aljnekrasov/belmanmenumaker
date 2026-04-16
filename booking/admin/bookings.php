@@ -18,7 +18,7 @@ $search = trim($_GET['q'] ?? '');
 $where = [];
 $params = [];
 
-if ($filterStatus !== '' && in_array($filterStatus, ['pending', 'paid', 'cancelled', 'refunded', 'expired'], true)) {
+if ($filterStatus !== '' && in_array($filterStatus, ['pending', 'confirmed', 'paid', 'cancelled', 'refunded', 'expired'], true)) {
     $where[] = 'b.status = ?';
     $params[] = $filterStatus;
 }

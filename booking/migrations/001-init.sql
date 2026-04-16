@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     comment TEXT,
     dietary VARCHAR(500) DEFAULT NULL COMMENT 'JSON-массив для ужинов',
     total_amount INT UNSIGNED NOT NULL COMMENT 'в копейках',
-    status ENUM('pending', 'paid', 'cancelled', 'refunded', 'expired') NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'confirmed', 'paid', 'cancelled', 'refunded', 'expired') NOT NULL DEFAULT 'pending',
     payment_id VARCHAR(128) DEFAULT NULL,
     payment_provider VARCHAR(32) DEFAULT NULL,
     booking_token VARCHAR(64) NOT NULL UNIQUE COMMENT 'для ссылок отмены/просмотра',

@@ -80,7 +80,7 @@ class BookingService
     }
 
     /**
-     * Создать бронь
+     * Создать бронь (без оплаты — мгновенное подтверждение)
      */
     public function createBooking(array $data): array
     {
@@ -117,12 +117,11 @@ class BookingService
             // Генерация токена
             $bookingToken = bin2hex(random_bytes(32));
             $totalAmount = (int)$event['price_per_guest'] * $guests;
-            $holdMinutes = $this->config['booking']['hold_minutes'] ?? 15;
 
-            // Создание брони
+            // Создание брони — сразу confirmed
             $stmt = $this->db->prepare(
-                'INSERT INTO bookings (event_id, guests, name, phone, email, comment, dietary, total_amount, booking_token, expires_at)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))'
+                'INSERT INTO bookings (event_id, guests, name, phone, email, comment, dietary, total_amount, booking_token, status, paid_at, expires_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "confirmed", NOW(), DATE_ADD(NOW(), INTERVAL 365 DAY))'
             );
             $stmt->execute([
                 $eventId,
@@ -134,7 +133,6 @@ class BookingService
                 !empty($data['dietary']) ? json_encode($data['dietary'], JSON_UNESCAPED_UNICODE) : null,
                 $totalAmount,
                 $bookingToken,
-                $holdMinutes,
             ]);
 
             $bookingId = (int)$this->db->lastInsertId();
@@ -148,37 +146,17 @@ class BookingService
 
             $this->db->commit();
 
-            // Создание платежа
-            $booking = [
-                'id' => $bookingId,
-                'booking_token' => $bookingToken,
-                'total_amount' => $totalAmount,
-                'name' => $data['name'],
-                'email' => $data['email'],
-            ];
-
-            $paymentResult = $this->payment->createPayment($booking);
-
-            // Сохранение payment_id
-            $stmt = $this->db->prepare(
-                'UPDATE bookings SET payment_id = ?, payment_provider = ? WHERE id = ?'
-            );
-            $stmt->execute([
-                $paymentResult['payment_id'],
-                $this->config['payment_provider'],
-                $bookingId,
-            ]);
-
-            // Получаем expires_at
-            $stmt = $this->db->prepare('SELECT expires_at FROM bookings WHERE id = ?');
-            $stmt->execute([$bookingId]);
-            $expiresAt = $stmt->fetchColumn();
-
             return [
                 'booking_id' => $bookingId,
                 'booking_token' => $bookingToken,
-                'payment_url' => $paymentResult['payment_url'],
-                'expires_at' => $expiresAt,
+                'confirmed' => true,
+                'event_title' => $event['title'],
+                'event_date' => $event['event_date'],
+                'event_time' => substr($event['event_time'], 0, 5),
+                'guests' => $guests,
+                'total_amount' => $totalAmount,
+                'name' => $data['name'],
+                'email' => $data['email'],
             ];
         } catch (Throwable $e) {
             if ($this->db->inTransaction()) {
@@ -233,7 +211,7 @@ class BookingService
             $stmt->execute([$bookingId]);
             $booking = $stmt->fetch();
 
-            if (!$booking || !in_array($booking['status'], ['pending', 'paid'])) {
+            if (!$booking || !in_array($booking['status'], ['pending', 'confirmed', 'paid'])) {
                 $this->db->rollBack();
                 return false;
             }

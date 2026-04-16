@@ -202,6 +202,7 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
         .badge-closed { background: #eee; color: #666; }
         .badge-sold_out { background: #fdecea; color: var(--red); }
         .badge-pending { background: #fef9e7; color: #b7950b; }
+        .badge-confirmed { background: #d5f5e3; color: #1e7e34; }
         .badge-paid { background: #d5f5e3; color: #1e7e34; }
         .badge-cancelled { background: #eee; color: #666; }
         .badge-refunded { background: #d6eaf8; color: #2471a3; }
