@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Радиус — Партнёрская программа</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:      #2F4A3F;
+  --green-dark: #1e3329;
+  --olive:      #7A8F7A;
+  --gold:       #C5A55A;
+  --cream:      #FAF8F4;
+  --cream-dark: #f0ede6;
+  --dark:       #141414;
+  --text:       #2a2a2a;
+  --muted:      #6b6b6b;
+  --white:      #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #555;
+}
+
+/* ── Slide: 16:9 ── */
+.slide {
+  width: 1280px;
+  height: 720px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto 2px;
+  display: flex;
+}
+
+@media print {
+  html, body { background: none; }
+  .slide {
+    width: 100vw;
+    height: 56.25vw;
+    margin: 0;
+    page-break-after: always;
+    break-after: page;
+  }
+  @page { size: landscape; margin: 0; }
+}
+
+/* ── Shared ── */
+.tag {
+  font-family: 'PT Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.serif-h {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -.01em;
+}
+.serif-h em { font-style: italic; font-weight: 500; }
+
+/* ══════════════════════════════
+   1 — ОБЛОЖКА
+══════════════════════════════ */
+.s1 {
+  background: var(--green-dark);
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.s1-bg {
+  position: absolute; inset: 0;
+  background: url('img/hero.png') center/cover no-repeat;
+  opacity: .3;
+}
+.s1-content {
+  position: relative; z-index: 1;
+  padding: 56px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.s1-logo img {
+  height: 60px;
+  filter: brightness(0) invert(1);
+  display: block;
+  margin-bottom: 16px;
+}
+.s1-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-style: italic;
+  color: rgba(255,255,255,.45);
+}
+.s1-right {
+  text-align: right;
+}
+.s1-right-label {
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(197,165,90,.55);
+  margin-bottom: 6px;
+}
+.s1-right-val {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.45);
+  line-height: 1.6;
+}
+.s1-line {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--gold), transparent);
+}
+
+/* ══════════════════════════════
+   2 — НАШИ ПРОЕКТЫ
+══════════════════════════════ */
+.s-proj {
+  background: var(--cream);
+  flex-direction: column;
+}
+.s-proj-head {
+  padding: 44px 80px 28px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.s-proj-head .tag { color: var(--olive); }
+.s-proj-head .serif-h { font-size: 44px; color: var(--dark); }
+.s-proj-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.s-proj-col {
+  padding: 32px 56px;
+  display: flex;
+  flex-direction: column;
+}
+.s-proj-col:first-child {
+  border-right: 1px solid rgba(0,0,0,.08);
+  background: var(--green-dark);
+}
+.s-proj-col-tag { margin-bottom: 10px; color: rgba(197,165,90,.7); }
+.s-proj-col:last-child .s-proj-col-tag { color: var(--olive); }
+.s-proj-col-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: -.01em;
+}
+.s-proj-col:last-child .s-proj-col-title { color: var(--dark); }
+.s-proj-col-title em { font-style: italic; font-weight: 500; }
+.s-proj-col-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.5);
+  line-height: 1.75;
+  flex: 1;
+}
+.s-proj-col:last-child .s-proj-col-desc { color: var(--muted); }
+.s-proj-col-facts {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.s-proj-col:last-child .s-proj-col-facts { border-top-color: rgba(0,0,0,.08); }
+.s-proj-fact-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+}
+.s-proj-col:last-child .s-proj-fact-val { color: var(--green); }
+.s-proj-fact-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: rgba(255,255,255,.3);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.s-proj-col:last-child .s-proj-fact-label { color: var(--muted); }
+
+/* ══════════════════════════════
+   3 — О ПРОЕКТЕ
+══════════════════════════════ */
+.s-about {
+  background: var(--green-dark);
+}
+.s-about-photo {
+  width: 44%;
+  flex-shrink: 0;
+  background: url('img/food5.jpeg') center/cover no-repeat;
+  position: relative;
+}
+.s-about-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, transparent 60%, var(--green-dark) 100%);
+}
+.s-about-body {
+  flex: 1;
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s-about-body .tag { color: rgba(197,165,90,.6); margin-bottom: 16px; }
+.s-about-h {
+  font-size: 48px;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.s-about-p {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,.5);
+  line-height: 1.8;
+}
+.s-about-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.s-about-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+}
+.s-about-stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: rgba(255,255,255,.3);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════
+   — БРЕНД / УТП
+══════════════════════════════ */
+.s-brand {
+  background: var(--green-dark);
+  position: relative;
+  overflow: hidden;
+}
+.s-brand-bg {
+  position: absolute; inset: 0;
+  background: url('img/wineyard.JPG') center/cover no-repeat;
+  opacity: .25;
+  filter: grayscale(.2);
+}
+.s-brand-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(30,51,41,.92) 0%, rgba(30,51,41,.7) 60%, rgba(30,51,41,.95) 100%);
+}
+.s-brand-inner {
+  position: relative; z-index: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0;
+}
+.s-brand-left {
+  padding: 64px 56px 64px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+.s-brand-tag {
+  font-family: 'PT Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+.s-brand-quote-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 72px;
+  color: rgba(197,165,90,.35);
+  line-height: .5;
+  margin-bottom: 12px;
+}
+.s-brand-promise {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 1.15;
+  color: var(--white);
+  letter-spacing: -.01em;
+  margin-bottom: 28px;
+}
+.s-brand-promise em { font-style: italic; font-weight: 500; color: var(--gold); }
+.s-brand-caption {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.45);
+  line-height: 1.8;
+  max-width: 480px;
+}
+.s-brand-right {
+  padding: 64px 80px 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0;
+}
+.s-brand-right-label {
+  font-family: 'PT Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(197,165,90,.6);
+  margin-bottom: 20px;
+}
+.s-brand-usp {
+  display: flex;
+  flex-direction: column;
+}
+.s-brand-usp-item {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.s-brand-usp-item:last-child { border-bottom: none; }
+.s-brand-usp-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--gold);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 24px;
+}
+.s-brand-usp-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 4px;
+  letter-spacing: .01em;
+}
+.s-brand-usp-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.42);
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════
+   4 — ФОРМАТЫ
+══════════════════════════════ */
+.s-formats {
+  background: var(--cream);
+  flex-direction: column;
+}
+.s-formats-head {
+  padding: 40px 80px 28px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.s-formats-head .tag { color: var(--olive); }
+.s-formats-head .serif-h { font-size: 44px; color: var(--dark); }
+.s-formats-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.s-format-col {
+  padding: 32px 56px;
+  display: flex;
+  flex-direction: column;
+}
+.s-format-col:first-child {
+  background: var(--green);
+  border-right: 1px solid rgba(255,255,255,.05);
+}
+.s-format-badge {
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.s-format-col:last-child .s-format-badge { color: var(--olive); }
+.s-format-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 12px;
+  letter-spacing: -.01em;
+}
+.s-format-col:last-child .s-format-title { color: var(--dark); }
+.s-format-title em { font-style: italic; font-weight: 500; }
+.s-format-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.5);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 16px;
+}
+.s-format-col:last-child .s-format-desc { color: var(--muted); }
+.s-format-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.s-format-features li {
+  font-size: 12px;
+  color: rgba(255,255,255,.6);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.s-format-col:last-child .s-format-features li { color: var(--muted); }
+.s-format-features li::before {
+  content: '';
+  width: 14px; height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════
+   5 — АУДИТОРИЯ
+══════════════════════════════ */
+.s-aud {
+  background: var(--green);
+  flex-direction: column;
+}
+.s-aud-head {
+  padding: 44px 80px 28px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.s-aud-head .tag { color: rgba(197,165,90,.7); }
+.s-aud-head .serif-h { font-size: 44px; color: var(--white); }
+.s-aud-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,.07);
+}
+.s-aud-card {
+  background: var(--green);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.s-aud-icon { font-size: 24px; }
+.s-aud-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--white);
+}
+.s-aud-card-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.42);
+  line-height: 1.65;
+}
+
+/* ══════════════════════════════
+   6 — УНИКАЛЬНОСТЬ
+══════════════════════════════ */
+.s-uniq {
+  background: var(--cream-dark);
+  flex-direction: column;
+}
+.s-uniq-head {
+  padding: 44px 80px 28px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.s-uniq-head .tag { color: var(--olive); }
+.s-uniq-head .serif-h { font-size: 44px; color: var(--dark); }
+.s-uniq-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.s-uniq-col {
+  padding: 32px 52px;
+  border-right: 1px solid rgba(0,0,0,.08);
+}
+.s-uniq-col:last-child { border-right: none; }
+.s-uniq-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 400;
+  color: var(--green);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.s-uniq-num sup { font-size: 28px; vertical-align: super; }
+.s-uniq-title {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+.s-uniq-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ══════════════════════════════
+   7 — ПАРТНЁРАМ
+══════════════════════════════ */
+.s-part {
+  background: var(--green-dark);
+}
+.s-part-left {
+  width: 38%;
+  flex-shrink: 0;
+  padding: 56px 56px 56px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+.s-part-left .tag { color: rgba(197,165,90,.7); margin-bottom: 16px; }
+.s-part-h {
+  font-size: 44px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.s-part-p {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,.4);
+  line-height: 1.75;
+}
+.s-part-right {
+  flex: 1;
+  padding: 40px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+.s-part-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 16px 20px;
+  background: rgba(255,255,255,.04);
+  border-left: 2px solid var(--gold);
+}
+.s-part-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 28px;
+  margin-top: 2px;
+}
+.s-part-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 3px;
+}
+.s-part-desc {
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255,255,255,.38);
+  line-height: 1.55;
+}
+
+/* ══════════════════════════════
+   8 — КОНТАКТЫ
+══════════════════════════════ */
+.s-contacts {
+  background: var(--green-dark);
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+.s-contacts-bg {
+  position: absolute; inset: 0;
+  background: url('img/hero.png') center/cover no-repeat;
+  opacity: .2;
+}
+.s-contacts-inner {
+  position: relative; z-index: 1;
+  padding: 0 80px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.s-contacts-logo img {
+  height: 52px;
+  filter: brightness(0) invert(1);
+  display: block;
+  margin-bottom: 10px;
+}
+.s-contacts-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 44px;
+}
+.s-contacts-list {
+  display: flex;
+  gap: 56px;
+  margin-bottom: 44px;
+}
+.s-contacts-label {
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 5px;
+}
+.s-contacts-val {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,.75);
+}
+.s-contacts-val a { color: inherit; text-decoration: none; }
+.s-contacts-footer {
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: rgba(255,255,255,.18);
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+</style>
+</head>
+<body>
+
+<!-- 1. ОБЛОЖКА -->
+<div class="slide s1">
+  <div class="s1-bg"></div>
+  <div class="s1-content">
+    <div>
+      <div class="s1-logo"><img src="new.svg" alt="Радиус"></div>
+      <div class="s1-tagline">Сезонный поп-ап ресторан на винограднике</div>
+    </div>
+    <div class="s1-right">
+      <div class="s1-right-label">Документ</div>
+      <div class="s1-right-val">Партнёрская программа<br>Сезон 2025</div>
+    </div>
+  </div>
+  <div class="s1-line"></div>
+</div>
+
+<!-- 2. НАШИ ПРОЕКТЫ -->
+<div class="slide s-proj">
+  <div class="s-proj-head">
+    <div class="tag" style="color:var(--olive)">Семья Бельмас</div>
+    <h2 class="serif-h" style="font-size:44px;color:var(--dark)">Наши <em>проекты</em></h2>
+  </div>
+  <div class="s-proj-cols">
+    <div class="s-proj-col">
+      <div class="tag s-proj-col-tag">Ресторан · Балаклава</div>
+      <div class="s-proj-col-title">Маринара<br><em>Балаклава</em></div>
+      <div class="s-proj-col-desc">Ресторан средиземноморской кухни на берегу Балаклавской бухты — одного из красивейших мест Крыма. Свежая рыба, морепродукты, открытая терраса над водой. Семейное место с историей более десяти лет.</div>
+      <div class="s-proj-col-facts">
+        <div><div class="s-proj-fact-val">10+</div><div class="s-proj-fact-label">Лет работы</div></div>
+        <div><div class="s-proj-fact-val">Бухта</div><div class="s-proj-fact-label">Балаклава</div></div>
+        <div><div class="s-proj-fact-val">Терраса</div><div class="s-proj-fact-label">над водой</div></div>
+      </div>
+    </div>
+    <div class="s-proj-col">
+      <div class="tag s-proj-col-tag">Виноделие · Родное</div>
+      <div class="s-proj-col-title">Belmas<br><em>Winery</em></div>
+      <div class="s-proj-col-desc">Семейное хозяйство в предгорьях Крыма. Собственные виноградники, ручной сбор, минимальное вмешательство. Вино, отражающее характер этой земли — и основа всех программ «Радиуса».</div>
+      <div class="s-proj-col-facts">
+        <div><div class="s-proj-fact-val">Крым</div><div class="s-proj-fact-label">Терруар</div></div>
+        <div><div class="s-proj-fact-val">Ручной</div><div class="s-proj-fact-label">сбор</div></div>
+        <div><div class="s-proj-fact-val">с 2010</div><div class="s-proj-fact-label">Семья</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. О ПРОЕКТЕ -->
+<div class="slide s-about">
+  <div class="s-about-photo">
+    <div class="s-about-photo"></div>
+  </div>
+  <div class="s-about-body">
+    <div class="tag" style="color:rgba(197,165,90,.6);margin-bottom:14px">О проекте</div>
+    <h2 class="serif-h s-about-h">Не ресторан,<br>а <em>уникальный</em> опыт</h2>
+    <p class="s-about-p">«Радиус» — камерный поп-ап ресторан прямо на виноградниках семьи Бельмас в Крыму. Гастроужины и дегустации в окружении природы, живой рассказ винодела о терруаре — <span style="color:rgba(255,255,255,.7)">только по предварительной записи.</span></p>
+    <div class="s-about-stats">
+      <div>
+        <div class="s-about-stat-num">15</div>
+        <div class="s-about-stat-label">Максимум<br>гостей</div>
+      </div>
+      <div>
+        <div class="s-about-stat-num">6</div>
+        <div class="s-about-stat-label">Курсов<br>в сет-ужине</div>
+      </div>
+      <div>
+        <div class="s-about-stat-num">2,5</div>
+        <div class="s-about-stat-label">Часа<br>вечер</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. БРЕНД / УТП -->
+<div class="slide s-brand">
+  <div class="s-brand-bg"></div>
+  <div class="s-brand-veil"></div>
+  <div class="s-brand-inner">
+    <div class="s-brand-left">
+      <div class="s-brand-tag">Обещание бренда</div>
+      <div class="s-brand-quote-mark">“</div>
+      <div class="s-brand-promise">В <em>самом сердце</em><br>виноградника —<br>там, где <em>рождается</em> вино.</div>
+      <div class="s-brand-caption">«Радиус» — это не про ресторан рядом с винодельней. Это про стол, накрытый <strong style="color:rgba(255,255,255,.75);font-weight:400">среди лоз</strong>, под небом Крыма, в нескольких шагах от бочек. Природа — не декорация, а главный соавтор вечера.</div>
+    </div>
+    <div class="s-brand-right">
+      <div class="s-brand-right-label">Уникальное торговое предложение</div>
+      <div class="s-brand-usp">
+        <div class="s-brand-usp-item">
+          <div class="s-brand-usp-num">i.</div>
+          <div>
+            <div class="s-brand-usp-title">Стол в винограднике, а не при нём</div>
+            <div class="s-brand-usp-desc">Единственный поп-ап ресторан в Крыму, который работает буквально между рядов лоз — физическая близость к источнику вина</div>
+          </div>
+        </div>
+        <div class="s-brand-usp-item">
+          <div class="s-brand-usp-num">ii.</div>
+          <div>
+            <div class="s-brand-usp-title">Природа как шеф-режиссёр</div>
+            <div class="s-brand-usp-desc">Свет заката, аромат лоз, звуки предгорий — всё это часть сенсорного сценария, а не фон</div>
+          </div>
+        </div>
+        <div class="s-brand-usp-item">
+          <div class="s-brand-usp-num">iii.</div>
+          <div>
+            <div class="s-brand-usp-title">Вино из земли под ногами</div>
+            <div class="s-brand-usp-desc">Гость пьёт вино там, где оно выросло. Винодел рассказывает о том, что видно за столом — не по слайдам</div>
+          </div>
+        </div>
+        <div class="s-brand-usp-item">
+          <div class="s-brand-usp-num">iv.</div>
+          <div>
+            <div class="s-brand-usp-title">Сезон, а не меню</div>
+            <div class="s-brand-usp-desc">Блюда и вина меняются вместе с виноградником: ранняя весна, сбор, молодое вино — разный опыт в разное время</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. ФОРМАТЫ -->
+<div class="slide s-formats">
+  <div class="s-formats-head">
+    <div class="tag" style="color:var(--olive)">Форматы</div>
+    <h2 class="serif-h" style="font-size:44px;color:var(--dark)">Два <em>варианта</em> визита</h2>
+  </div>
+  <div class="s-formats-cols">
+    <div class="s-format-col">
+      <div class="s-format-badge">Полный вечер</div>
+      <div class="s-format-title">Гастроужин<br><em>на закате</em></div>
+      <div class="s-format-desc">Сенсорное путешествие с виноделом и шеф-поваром. Гастропары раскрывают потенциал вина, природа создаёт эффект полного погружения.</div>
+      <ul class="s-format-features">
+        <li>6 блюд полного сет-меню</li>
+        <li>5 лучших вин Belmas Winery</li>
+        <li>Экскурсия по винограднику</li>
+        <li>2–2,5 часа</li>
+      </ul>
+    </div>
+    <div class="s-format-col">
+      <div class="s-format-badge">Дневной формат</div>
+      <div class="s-format-title">Дегустация<br><em>и лёгкий бранч</em></div>
+      <div class="s-format-desc">Знакомство с линейкой вин под руководством сомелье. Сезонные закуски и прогулка по виноградникам.</div>
+      <ul class="s-format-features">
+        <li>Дегустация 5 вин с сопровождением</li>
+        <li>Сезонный бранч-стол</li>
+        <li>Экскурсия по винограднику</li>
+        <li>1,5–2 часа</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 5. АУДИТОРИЯ -->
+<div class="slide s-aud">
+  <div class="s-aud-head">
+    <div class="tag" style="color:rgba(197,165,90,.7)">Аудитория</div>
+    <h2 class="serif-h" style="font-size:44px;color:var(--white)">Кто ваш <em>гость</em></h2>
+  </div>
+  <div class="s-aud-grid">
+    <div class="s-aud-card">
+      <div class="s-aud-icon">🍷</div>
+      <div class="s-aud-card-title">Любители вина</div>
+      <div class="s-aud-card-desc">Хотят познакомиться с крымским терруаром и виноделием из первых уст</div>
+    </div>
+    <div class="s-aud-card">
+      <div class="s-aud-icon">✈️</div>
+      <div class="s-aud-card-title">Путешественники</div>
+      <div class="s-aud-card-desc">Ищут аутентичные местные впечатления за пределами туристических маршрутов</div>
+    </div>
+    <div class="s-aud-card">
+      <div class="s-aud-icon">🎁</div>
+      <div class="s-aud-card-title">Особые поводы</div>
+      <div class="s-aud-card-desc">Ужин на закате в виноградниках — идеальный подарок и романтический вечер</div>
+    </div>
+    <div class="s-aud-card">
+      <div class="s-aud-icon">🏛️</div>
+      <div class="s-aud-card-title">Корпоративы</div>
+      <div class="s-aud-card-desc">Небольшие команды, ищущие нестандартный деловой ужин или тимбилдинг</div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. УНИКАЛЬНОСТЬ -->
+<div class="slide s-uniq">
+  <div class="s-uniq-head">
+    <div class="tag" style="color:var(--olive)">Почему Радиус</div>
+    <h2 class="serif-h" style="font-size:44px;color:var(--dark)">Что делает нас <em>особенными</em></h2>
+  </div>
+  <div class="s-uniq-cols">
+    <div class="s-uniq-col">
+      <div class="s-uniq-num">1<sup>st</sup></div>
+      <div class="s-uniq-title">Поп-ап на винограднике</div>
+      <div class="s-uniq-desc">Первый и единственный гастрономический поп-ап ресторан прямо среди виноградников Крыма — без аналогов в регионе</div>
+    </div>
+    <div class="s-uniq-col">
+      <div class="s-uniq-num">15</div>
+      <div class="s-uniq-title">Камерный формат</div>
+      <div class="s-uniq-desc">Максимум 15 гостей. Личный контакт с виноделом, атмосфера семейного стола — не массовое мероприятие</div>
+    </div>
+    <div class="s-uniq-col">
+      <div class="s-uniq-num">100<sup>%</sup></div>
+      <div class="s-uniq-title">Авторский продукт</div>
+      <div class="s-uniq-desc">Собственное вино, кухня, семья Бельмас как хозяева — полная аутентичность без посредников</div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. ПАРТНЁРАМ -->
+<div class="slide s-part">
+  <div class="s-part-left">
+    <div class="tag" style="color:rgba(197,165,90,.7);margin-bottom:16px">Сотрудничество</div>
+    <h2 class="serif-h s-part-h">Что мы <em>предлагаем</em> партнёрам</h2>
+    <p class="s-part-p">Консьерж-сервисы, винные гиды, отели и тревел-агентства — если ваши клиенты ценят качество впечатлений, нам есть что предложить.</p>
+  </div>
+  <div class="s-part-right">
+    <div class="s-part-item">
+      <div class="s-part-num">1</div>
+      <div><div class="s-part-title">Комиссионное вознаграждение</div><div class="s-part-desc">Фиксированная комиссия с каждого гостя по вашей рекомендации</div></div>
+    </div>
+    <div class="s-part-item">
+      <div class="s-part-num">2</div>
+      <div><div class="s-part-title">Приоритетное бронирование</div><div class="s-part-desc">Доступ к закрытым датам и резервирование мест заранее</div></div>
+    </div>
+    <div class="s-part-item">
+      <div class="s-part-num">3</div>
+      <div><div class="s-part-title">Ознакомительный визит</div><div class="s-part-desc">Бесплатный ужин для вас и команды — рекомендуйте из личного опыта</div></div>
+    </div>
+    <div class="s-part-item">
+      <div class="s-part-num">4</div>
+      <div><div class="s-part-title">Медиаматериалы и поддержка</div><div class="s-part-desc">Фото, тексты и брифинг для коммуникации с вашими клиентами</div></div>
+    </div>
+    <div class="s-part-item">
+      <div class="s-part-num">5</div>
+      <div><div class="s-part-title">Персональный менеджер</div><div class="s-part-desc">Выделенный контакт для оперативного согласования броней</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. КОНТАКТЫ -->
+<div class="slide s-contacts">
+  <div class="s-contacts-bg"></div>
+  <div class="s-contacts-inner">
+    <div class="s-contacts-logo"><img src="new.svg" alt="Радиус"></div>
+    <div class="s-contacts-sub">Belmas Winery · Крым · Родное</div>
+    <div class="s-contacts-list">
+      <div>
+        <div class="s-contacts-label">Email</div>
+        <div class="s-contacts-val"><a href="mailto:booking@radius45.ru">booking@radius45.ru</a></div>
+      </div>
+      <div>
+        <div class="s-contacts-label">Сайт</div>
+        <div class="s-contacts-val"><a href="https://radius45.ru" target="_blank">radius45.ru</a></div>
+      </div>
+      <div>
+        <div class="s-contacts-label">Адрес</div>
+        <div class="s-contacts-val">Крым, Севастополь, с. Родное</div>
+      </div>
+    </div>
+    <div class="s-contacts-footer">© 2025 ООО «Терруар» · ОГРН 1159204007533 · ИНН 9204549525</div>
+  </div>
+</div>
+
+</body>
+</html>
