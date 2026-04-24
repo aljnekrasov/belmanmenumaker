@@ -142,13 +142,37 @@ html, body {
   grid-template-columns: 1fr 1fr;
 }
 .s-proj-col {
-  padding: 32px 56px;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
 .s-proj-col:first-child {
   border-right: 1px solid rgba(0,0,0,.08);
   background: var(--green-dark);
+}
+.s-proj-col-photo {
+  height: 200px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  flex-shrink: 0;
+}
+.s-proj-col:first-child .s-proj-col-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(30,51,41,0) 50%, rgba(30,51,41,.95) 100%);
+}
+.s-proj-col:last-child .s-proj-col-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(250,248,244,0) 50%, rgba(250,248,244,.95) 100%);
+}
+.s-proj-col-body {
+  padding: 24px 56px 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 .s-proj-col-tag { margin-bottom: 10px; color: rgba(197,165,90,.7); }
 .s-proj-col:last-child .s-proj-col-tag { color: var(--olive); }
@@ -393,13 +417,37 @@ html, body {
   grid-template-columns: 1fr 1fr;
 }
 .s-format-col {
-  padding: 32px 56px;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
 .s-format-col:first-child {
   background: var(--green);
   border-right: 1px solid rgba(255,255,255,.05);
+}
+.s-format-col-photo {
+  height: 180px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  flex-shrink: 0;
+}
+.s-format-col:first-child .s-format-col-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(47,74,63,0) 55%, rgba(47,74,63,.95) 100%);
+}
+.s-format-col:last-child .s-format-col-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(250,248,244,0) 55%, rgba(250,248,244,.95) 100%);
+}
+.s-format-col-body {
+  padding: 24px 56px 32px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 .s-format-badge {
   font-family: 'PT Mono', monospace;
@@ -496,6 +544,50 @@ html, body {
 }
 
 /* ══════════════════════════════
+   — ГАЛЕРЕЯ
+══════════════════════════════ */
+.s-gallery {
+  background: var(--dark);
+  flex-direction: column;
+}
+.s-gallery-head {
+  padding: 40px 80px 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.s-gallery-head .tag { color: rgba(197,165,90,.7); }
+.s-gallery-head .serif-h { font-size: 42px; color: var(--white); }
+.s-gallery-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  background: rgba(255,255,255,.07);
+}
+.s-gallery-cell {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+.s-gallery-cell.tall { grid-row: span 2; }
+.s-gallery-cell-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 14px 18px;
+  background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.82);
+}
+
+/* ══════════════════════════════
    6 — УНИКАЛЬНОСТЬ
 ══════════════════════════════ */
 .s-uniq {
@@ -550,6 +642,7 @@ html, body {
 ══════════════════════════════ */
 .s-part {
   background: var(--green-dark);
+  position: relative;
 }
 .s-part-left {
   width: 38%;
@@ -559,7 +652,21 @@ html, body {
   flex-direction: column;
   justify-content: center;
   border-right: 1px solid rgba(255,255,255,.07);
+  position: relative;
+  overflow: hidden;
 }
+.s-part-left-bg {
+  position: absolute; inset: 0;
+  background: url('img/landview2.webp') center/cover no-repeat;
+  opacity: .18;
+}
+.s-part-left-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(30,51,41,.88) 0%, rgba(30,51,41,.75) 100%);
+}
+.s-part-left > .tag,
+.s-part-left > .s-part-h,
+.s-part-left > .s-part-p { position: relative; z-index: 1; }
 .s-part-left .tag { color: rgba(197,165,90,.7); margin-bottom: 16px; }
 .s-part-h {
   font-size: 44px;
@@ -700,23 +807,29 @@ html, body {
   </div>
   <div class="s-proj-cols">
     <div class="s-proj-col">
-      <div class="tag s-proj-col-tag">Ресторан · Балаклава</div>
-      <div class="s-proj-col-title">Маринара<br><em>Балаклава</em></div>
-      <div class="s-proj-col-desc">Ресторан средиземноморской кухни на берегу Балаклавской бухты — одного из красивейших мест Крыма. Свежая рыба, морепродукты, открытая терраса над водой. Семейное место с историей более десяти лет.</div>
-      <div class="s-proj-col-facts">
-        <div><div class="s-proj-fact-val">10+</div><div class="s-proj-fact-label">Лет работы</div></div>
-        <div><div class="s-proj-fact-val">Бухта</div><div class="s-proj-fact-label">Балаклава</div></div>
-        <div><div class="s-proj-fact-val">Терраса</div><div class="s-proj-fact-label">над водой</div></div>
+      <div class="s-proj-col-photo" style="background-image:url('img/food3.webp')"></div>
+      <div class="s-proj-col-body">
+        <div class="tag s-proj-col-tag">Ресторан · Балаклава</div>
+        <div class="s-proj-col-title">Маринара<br><em>Балаклава</em></div>
+        <div class="s-proj-col-desc">Ресторан средиземноморской кухни на берегу Балаклавской бухты — одного из красивейших мест Крыма. Свежая рыба, морепродукты, открытая терраса над водой. Семейное место с историей более десяти лет.</div>
+        <div class="s-proj-col-facts">
+          <div><div class="s-proj-fact-val">10+</div><div class="s-proj-fact-label">Лет работы</div></div>
+          <div><div class="s-proj-fact-val">Бухта</div><div class="s-proj-fact-label">Балаклава</div></div>
+          <div><div class="s-proj-fact-val">Терраса</div><div class="s-proj-fact-label">над водой</div></div>
+        </div>
       </div>
     </div>
     <div class="s-proj-col">
-      <div class="tag s-proj-col-tag">Виноделие · Родное</div>
-      <div class="s-proj-col-title">Belmas<br><em>Winery</em></div>
-      <div class="s-proj-col-desc">Семейное хозяйство в предгорьях Крыма. Собственные виноградники, ручной сбор, минимальное вмешательство. Вино, отражающее характер этой земли — и основа всех программ «Радиуса».</div>
-      <div class="s-proj-col-facts">
-        <div><div class="s-proj-fact-val">Крым</div><div class="s-proj-fact-label">Терруар</div></div>
-        <div><div class="s-proj-fact-val">Ручной</div><div class="s-proj-fact-label">сбор</div></div>
-        <div><div class="s-proj-fact-val">с 2010</div><div class="s-proj-fact-label">Семья</div></div>
+      <div class="s-proj-col-photo" style="background-image:url('img/wineyardwalk.webp')"></div>
+      <div class="s-proj-col-body">
+        <div class="tag s-proj-col-tag">Виноделие · Родное</div>
+        <div class="s-proj-col-title">Belmas<br><em>Winery</em></div>
+        <div class="s-proj-col-desc">Семейное хозяйство в предгорьях Крыма. Собственные виноградники, ручной сбор, минимальное вмешательство. Вино, отражающее характер этой земли — и основа всех программ «Радиуса».</div>
+        <div class="s-proj-col-facts">
+          <div><div class="s-proj-fact-val">Крым</div><div class="s-proj-fact-label">Терруар</div></div>
+          <div><div class="s-proj-fact-val">Ручной</div><div class="s-proj-fact-label">сбор</div></div>
+          <div><div class="s-proj-fact-val">с 2010</div><div class="s-proj-fact-label">Семья</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -803,26 +916,32 @@ html, body {
   </div>
   <div class="s-formats-cols">
     <div class="s-format-col">
-      <div class="s-format-badge">Полный вечер</div>
-      <div class="s-format-title">Гастроужин<br><em>на закате</em></div>
-      <div class="s-format-desc">Сенсорное путешествие с виноделом и шеф-поваром. Гастропары раскрывают потенциал вина, природа создаёт эффект полного погружения.</div>
-      <ul class="s-format-features">
-        <li>6 блюд полного сет-меню</li>
-        <li>5 лучших вин Belmas Winery</li>
-        <li>Экскурсия по винограднику</li>
-        <li>2–2,5 часа</li>
-      </ul>
+      <div class="s-format-col-photo" style="background-image:url('img/food7.jpeg')"></div>
+      <div class="s-format-col-body">
+        <div class="s-format-badge">Полный вечер</div>
+        <div class="s-format-title">Гастроужин<br><em>на закате</em></div>
+        <div class="s-format-desc">Сенсорное путешествие с виноделом и шеф-поваром. Гастропары раскрывают потенциал вина, природа создаёт эффект полного погружения.</div>
+        <ul class="s-format-features">
+          <li>6 блюд полного сет-меню</li>
+          <li>5 лучших вин Belmas Winery</li>
+          <li>Экскурсия по винограднику</li>
+          <li>2–2,5 часа</li>
+        </ul>
+      </div>
     </div>
     <div class="s-format-col">
-      <div class="s-format-badge">Дневной формат</div>
-      <div class="s-format-title">Дегустация<br><em>и лёгкий бранч</em></div>
-      <div class="s-format-desc">Знакомство с линейкой вин под руководством сомелье. Сезонные закуски и прогулка по виноградникам.</div>
-      <ul class="s-format-features">
-        <li>Дегустация 5 вин с сопровождением</li>
-        <li>Сезонный бранч-стол</li>
-        <li>Экскурсия по винограднику</li>
-        <li>1,5–2 часа</li>
-      </ul>
+      <div class="s-format-col-photo" style="background-image:url('img/wineyard2.webp')"></div>
+      <div class="s-format-col-body">
+        <div class="s-format-badge">Дневной формат</div>
+        <div class="s-format-title">Дегустация<br><em>и лёгкий бранч</em></div>
+        <div class="s-format-desc">Знакомство с линейкой вин под руководством сомелье. Сезонные закуски и прогулка по виноградникам.</div>
+        <ul class="s-format-features">
+          <li>Дегустация 5 вин с сопровождением</li>
+          <li>Сезонный бранч-стол</li>
+          <li>Экскурсия по винограднику</li>
+          <li>1,5–2 часа</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -857,6 +976,31 @@ html, body {
   </div>
 </div>
 
+<!-- ГАЛЕРЕЯ -->
+<div class="slide s-gallery">
+  <div class="s-gallery-head">
+    <div class="tag">В кадре</div>
+    <h2 class="serif-h">Атмосфера <em>вечера</em></h2>
+  </div>
+  <div class="s-gallery-grid">
+    <div class="s-gallery-cell tall" style="background-image:url('img/landview23.webp')">
+      <div class="s-gallery-cell-caption">Виноградники · Родное</div>
+    </div>
+    <div class="s-gallery-cell" style="background-image:url('img/food4.jpeg')">
+      <div class="s-gallery-cell-caption">Сет-меню</div>
+    </div>
+    <div class="s-gallery-cell" style="background-image:url('img/luba.webp')">
+      <div class="s-gallery-cell-caption">Винодел</div>
+    </div>
+    <div class="s-gallery-cell" style="background-image:url('img/food6.jpeg')">
+      <div class="s-gallery-cell-caption">Гастропара</div>
+    </div>
+    <div class="s-gallery-cell" style="background-image:url('img/team.webp')">
+      <div class="s-gallery-cell-caption">Команда</div>
+    </div>
+  </div>
+</div>
+
 <!-- 6. УНИКАЛЬНОСТЬ -->
 <div class="slide s-uniq">
   <div class="s-uniq-head">
@@ -885,6 +1029,8 @@ html, body {
 <!-- 7. ПАРТНЁРАМ -->
 <div class="slide s-part">
   <div class="s-part-left">
+    <div class="s-part-left-bg"></div>
+    <div class="s-part-left-veil"></div>
     <div class="tag" style="color:rgba(197,165,90,.7);margin-bottom:16px">Сотрудничество</div>
     <h2 class="serif-h s-part-h">Что мы <em>предлагаем</em> партнёрам</h2>
     <p class="s-part-p">Консьерж-сервисы, винные гиды, отели и тревел-агентства — если ваши клиенты ценят качество впечатлений, нам есть что предложить.</p>
