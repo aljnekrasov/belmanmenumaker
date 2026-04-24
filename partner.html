@@ -236,11 +236,20 @@ html, body {
   flex-shrink: 0;
   background: url('img/food5.webp') center/cover no-repeat;
   position: relative;
+  border-right: 1px solid var(--gold);
 }
-.s-about-photo::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to right, transparent 60%, var(--green-dark) 100%);
+.s-about-photo-cap {
+  position: absolute;
+  left: 32px;
+  bottom: 32px;
+  padding: 6px 10px;
+  background: rgba(20,20,20,.55);
+  backdrop-filter: blur(2px);
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--white);
 }
 .s-about-body {
   flex: 1;
@@ -854,7 +863,7 @@ html, body {
 <!-- 3. О ПРОЕКТЕ -->
 <div class="slide s-about">
   <div class="s-about-photo">
-    <div class="s-about-photo"></div>
+    <div class="s-about-photo-cap">Гастроужин · на виноградниках</div>
   </div>
   <div class="s-about-body">
     <div class="tag" style="color:rgba(197,165,90,.6);margin-bottom:14px">О проекте</div>
