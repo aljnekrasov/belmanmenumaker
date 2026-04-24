@@ -151,25 +151,29 @@ html, body {
   background: var(--green-dark);
 }
 .s-proj-col-photo {
-  height: 200px;
+  height: 220px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--gold);
 }
-.s-proj-col:first-child .s-proj-col-photo::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(30,51,41,0) 50%, rgba(30,51,41,.95) 100%);
-}
-.s-proj-col:last-child .s-proj-col-photo::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(250,248,244,0) 50%, rgba(250,248,244,.95) 100%);
+.s-proj-col-photo-cap {
+  position: absolute;
+  left: 56px;
+  bottom: 14px;
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--white);
+  padding: 6px 10px;
+  background: rgba(20,20,20,.55);
+  backdrop-filter: blur(2px);
 }
 .s-proj-col-body {
-  padding: 24px 56px 32px;
+  padding: 28px 56px 32px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -426,25 +430,29 @@ html, body {
   border-right: 1px solid rgba(255,255,255,.05);
 }
 .s-format-col-photo {
-  height: 180px;
+  height: 200px;
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--gold);
 }
-.s-format-col:first-child .s-format-col-photo::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(47,74,63,0) 55%, rgba(47,74,63,.95) 100%);
-}
-.s-format-col:last-child .s-format-col-photo::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(250,248,244,0) 55%, rgba(250,248,244,.95) 100%);
+.s-format-col-photo-cap {
+  position: absolute;
+  left: 56px;
+  bottom: 14px;
+  font-family: 'PT Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--white);
+  padding: 6px 10px;
+  background: rgba(20,20,20,.55);
+  backdrop-filter: blur(2px);
 }
 .s-format-col-body {
-  padding: 24px 56px 32px;
+  padding: 28px 56px 32px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -573,18 +581,22 @@ html, body {
   background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
+  outline: 1px solid rgba(197,165,90,.18);
+  outline-offset: -1px;
 }
 .s-gallery-cell.tall { grid-row: span 2; }
 .s-gallery-cell-caption {
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  padding: 14px 18px;
-  background: linear-gradient(to top, rgba(0,0,0,.75), transparent);
+  left: 14px;
+  bottom: 14px;
+  padding: 6px 10px;
+  background: rgba(20,20,20,.55);
+  backdrop-filter: blur(2px);
   font-family: 'PT Mono', monospace;
   font-size: 9px;
-  letter-spacing: .2em;
+  letter-spacing: .22em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.82);
+  color: var(--white);
 }
 
 /* ══════════════════════════════
@@ -807,7 +819,9 @@ html, body {
   </div>
   <div class="s-proj-cols">
     <div class="s-proj-col">
-      <div class="s-proj-col-photo" style="background-image:url('img/food3.webp')"></div>
+      <div class="s-proj-col-photo" style="background-image:url('img/food3.webp')">
+        <div class="s-proj-col-photo-cap">Marinara · Balaklava</div>
+      </div>
       <div class="s-proj-col-body">
         <div class="tag s-proj-col-tag">Ресторан · Балаклава</div>
         <div class="s-proj-col-title">Маринара<br><em>Балаклава</em></div>
@@ -820,7 +834,9 @@ html, body {
       </div>
     </div>
     <div class="s-proj-col">
-      <div class="s-proj-col-photo" style="background-image:url('img/wineyardwalk.webp')"></div>
+      <div class="s-proj-col-photo" style="background-image:url('img/wineyardwalk.webp')">
+        <div class="s-proj-col-photo-cap">Belmas Winery · Родное</div>
+      </div>
       <div class="s-proj-col-body">
         <div class="tag s-proj-col-tag">Виноделие · Родное</div>
         <div class="s-proj-col-title">Belmas<br><em>Winery</em></div>
@@ -916,7 +932,9 @@ html, body {
   </div>
   <div class="s-formats-cols">
     <div class="s-format-col">
-      <div class="s-format-col-photo" style="background-image:url('img/food7.jpeg')"></div>
+      <div class="s-format-col-photo" style="background-image:url('img/food7.jpeg')">
+        <div class="s-format-col-photo-cap">Сет-ужин · 6 курсов</div>
+      </div>
       <div class="s-format-col-body">
         <div class="s-format-badge">Полный вечер</div>
         <div class="s-format-title">Гастроужин<br><em>на закате</em></div>
@@ -930,7 +948,9 @@ html, body {
       </div>
     </div>
     <div class="s-format-col">
-      <div class="s-format-col-photo" style="background-image:url('img/wineyard2.webp')"></div>
+      <div class="s-format-col-photo" style="background-image:url('img/wineyard2.webp')">
+        <div class="s-format-col-photo-cap">Дегустация · 5 вин</div>
+      </div>
       <div class="s-format-col-body">
         <div class="s-format-badge">Дневной формат</div>
         <div class="s-format-title">Дегустация<br><em>и лёгкий бранч</em></div>
