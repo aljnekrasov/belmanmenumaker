@@ -217,12 +217,87 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
         }
 
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main { margin-left: 0; padding: 20px 16px; }
+            .menu-toggle { display: flex; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform .25s ease;
+                box-shadow: 2px 0 16px rgba(0,0,0,.2);
+            }
+            body.menu-open .sidebar { transform: translateX(0); }
+            body.menu-open .sidebar-backdrop { display: block; }
+            .main { margin-left: 0; padding: 70px 16px 24px; }
+            .main h1 { font-size: 19px; margin-bottom: 18px; }
+
+            /* Tables scroll horizontally */
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+            .data-table thead, .data-table tbody { display: table; width: 100%; }
+
+            /* Filter inputs stack */
+            .filters { padding: 14px; gap: 10px; }
+            .filters .form-group { width: 100%; }
+            .filters input,
+            .filters select,
+            .filters textarea { min-width: 0 !important; width: 100% !important; }
+            .filters .btn { width: 100%; }
+
+            /* Inline grids collapse to 1 column */
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Action button rows wrap */
+            .actions, .form-actions { flex-wrap: wrap; }
+            .card { padding: 18px 16px; }
+        }
+
+        /* Mobile hamburger toggle (hidden on desktop) */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 12px; left: 12px;
+            z-index: 200;
+            width: 44px; height: 44px;
+            background: var(--green);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.18);
+        }
+        .menu-toggle span {
+            display: block;
+            width: 20px; height: 2px;
+            background: var(--cream);
+            border-radius: 1px;
+            transition: transform .2s, opacity .2s;
+        }
+        body.menu-open .menu-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        body.menu-open .menu-toggle span:nth-child(2) { opacity: 0; }
+        body.menu-open .menu-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            z-index: 90;
         }
     </style>
 </head>
 <body>
+
+<button type="button" class="menu-toggle" aria-label="Меню" id="menuToggle">
+    <span></span><span></span><span></span>
+</button>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
 <aside class="sidebar">
     <div class="sidebar-brand">
