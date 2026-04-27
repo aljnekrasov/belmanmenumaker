@@ -46,6 +46,17 @@ $pageTitle = 'События';
 require __DIR__ . '/_layout_start.php';
 ?>
 
+<?php if (isset($_GET['deleted'])): ?>
+    <div class="alert alert-success">
+        Событие #<?= (int)$_GET['deleted'] ?> удалено.
+        <?php if (isset($_GET['bookings']) && (int)$_GET['bookings'] > 0): ?>
+            Вместе с ним удалено <?= (int)$_GET['bookings'] ?> броней.
+        <?php else: ?>
+            Связанных броней не было.
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div></div>
     <a href="event-edit.php" class="btn btn-primary">+ Новое событие</a>

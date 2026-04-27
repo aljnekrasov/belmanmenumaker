@@ -36,6 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'cance
     }
 }
 
+// Удаление
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
+    try {
+        if ($service->deleteBooking($id)) {
+            header('Location: bookings.php?deleted=' . $id);
+            exit;
+        }
+        $error = 'Не удалось удалить бронирование';
+    } catch (Throwable $e) {
+        $error = 'Ошибка при удалении: ' . $e->getMessage();
+    }
+}
+
 $booking = $service->getBooking($id);
 if (!$booking) {
     header('Location: bookings.php');
@@ -194,6 +207,10 @@ require __DIR__ . '/_layout_start.php';
             <button type="submit" class="btn btn-danger">Отменить бронирование</button>
         </form>
     <?php endif; ?>
+    <form method="post" onsubmit="return confirm('Удалить бронирование #<?= (int)$id ?> безвозвратно?');" style="display:inline;margin-left:auto;">
+        <input type="hidden" name="action" value="delete">
+        <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
 </div>
 
 <?php require __DIR__ . '/_layout_end.php'; ?>

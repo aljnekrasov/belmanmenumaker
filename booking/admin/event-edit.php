@@ -184,9 +184,16 @@ require __DIR__ . '/_layout_start.php';
             </div>
         </div>
 
-        <div style="display:flex; gap:12px; margin-top:8px;">
+        <div style="display:flex; gap:12px; margin-top:8px; align-items:center;">
             <button type="submit" class="btn btn-primary"><?= $isEdit ? 'Сохранить' : 'Создать' ?></button>
             <a href="events.php" class="btn btn-outline">Отмена</a>
+            <?php if ($isEdit): ?>
+                <a href="event-delete.php?id=<?= (int)$event['id'] ?>"
+                   class="btn"
+                   style="margin-left:auto; background:#fff; color:#a83232; border:1px solid #d9a0a0;">
+                    Удалить событие
+                </a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

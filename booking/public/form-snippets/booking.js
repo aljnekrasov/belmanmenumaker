@@ -318,6 +318,7 @@ function initBookingForm(opts) {
       /* Dinner: single event card, auto-select */
       state.selectedSlot = state.slots[0];
       state.maxGuests = state.selectedSlot.available_seats || 10;
+      updateGuestsUI();
     }
 
     var html = '';
@@ -599,6 +600,7 @@ function initBookingForm(opts) {
         if (state.selectedSlot) {
           state.maxGuests = state.selectedSlot.available_seats || 10;
           if (state.guests > state.maxGuests) state.guests = state.maxGuests;
+          updateGuestsUI();
         }
         renderSlots();
         return;

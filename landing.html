@@ -6,7 +6,7 @@
 <title>Радиус — сезонный поп-ап ресторан на винограднике Belmas Winery</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=PT+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/booking/public/form-snippets/booking.css">
+<link rel="stylesheet" href="/booking/public/form-snippets/booking.css?v=20260421">
 <style>
 :root {
   --green: #2F4A3F;
@@ -273,33 +273,36 @@ header.on-light .btn-book:hover { background: var(--green-light); box-shadow: 0 
   grid-template-columns: 1fr 1fr;
   gap: 0;
 }
+.concept-bottom { height: 340px; overflow: hidden; }
 .concept-stat {
   background: var(--green);
   color: var(--cream);
-  padding: 64px 72px;
+  padding: 32px 56px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.concept-stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 120px;
-  font-weight: 600;
-  font-style: italic;
+.concept-stat-eyebrow {
+  font-family: 'PT Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
   color: var(--gold);
-  line-height: 1;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
-.concept-stat h3 {
-  font-family: 'Inter', sans-serif;
-  font-size: 20px;
-  font-weight: 400;
+.concept-stat-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  font-weight: 500;
+  font-style: italic;
   color: var(--cream);
-  margin-bottom: 18px;
+  line-height: 1.05;
+  margin-bottom: 12px;
+  letter-spacing: -.01em;
 }
 .concept-stat p {
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.6;
   opacity: .75;
   font-weight: 300;
 }
@@ -318,10 +321,10 @@ header.on-light .btn-book:hover { background: var(--green-light); box-shadow: 0 
   .concept-top { grid-template-columns: 1fr; gap: 32px; }
   .concept-hero-img img { height: 300px; }
   .concept-text-right { padding-top: 0; }
-  .concept-bottom { grid-template-columns: 1fr; }
-  .concept-stat { padding: 48px 24px; }
-  .concept-stat-num { font-size: 80px; }
-  .concept-bottom-img { height: 300px; }
+  .concept-bottom { grid-template-columns: 1fr; max-height: none; }
+  .concept-stat { padding: 32px 24px; }
+  .concept-stat-name { font-size: 32px; }
+  .concept-bottom-img { height: 260px; }
 }
 
 /* ── Food Menu (split layout) ── */
@@ -666,7 +669,8 @@ header.on-light .btn-book:hover { background: var(--green-light); box-shadow: 0 
 }
 .phil-photo {
   overflow: hidden;
-  min-height: 400px;
+  min-height: 280px;
+  height: 280px;
 }
 .phil-photo img {
   width: 100%;
@@ -679,7 +683,7 @@ header.on-light .btn-book:hover { background: var(--green-light); box-shadow: 0 
 @media (max-width: 768px) {
   .phil-editorial { grid-template-columns: 1fr; }
   .phil-item { padding: 32px 24px; }
-  .phil-photo { min-height: 280px; }
+  .phil-photo { min-height: 200px; height: 200px; }
 }
 
 /* ── Gallery ── */
@@ -1021,7 +1025,7 @@ header.on-light .btn-book:hover { background: var(--green-light); box-shadow: 0 
   grid-template-columns: 1fr 1fr;
   gap: 0;
   align-items: stretch;
-  min-height: 720px;
+  min-height: 280px;
 }
 .booking-info p {
   font-size: 17px;
@@ -1243,14 +1247,14 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
         <div class="visit-num">2</div>
         <h3>Погружение в локальную кухню</h3>
         <p>Лучшие ингредиенты от местных фермеров и рыбаков. Продукты для ужинов шеф-повар лично подбирает в радиусе 45 километров от Родного.</p>
-        <img class="visit-img" src="img/wineyard2.webp" alt="Крымская кухня">
+        <img class="visit-img" src="img/food7.webp" alt="Крымская кухня">
       </div>
 
       <div class="visit-step">
         <div class="visit-num">3</div>
         <h3>Ужин из 6 курсов с 5 лучшими винами</h3>
         <p>Гастроужин из 6 курсов и 5 лучших вин Belmas Winery. Тщательно подобранные гастропары раскрывают потенциал вина, а окружающая природа усиливает впечатление.</p>
-        <img class="visit-img" src="img/food5.webp" alt="Гастроужин с пейрингами">
+        <img class="visit-img" src="img/food2.webp" alt="Гастроужин с пейрингами">
       </div>
 
     </div>
@@ -1409,9 +1413,9 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
   </div>
   <div class="concept-bottom">
     <div class="concept-stat">
-      <div class="concept-stat-num">15</div>
-      <h3>До 15 гостей</h3>
-      <p>На каждом ужине за общим столом встречаются до пятнадцати гостей. За еду отвечает шеф-повар ресторана Marinara Любовь Плаксина. В основе её кухни лучшие локальные продукты, которые Любовь подбирает в радиусе 45 километров от Родного.</p>
+      <div class="concept-stat-eyebrow">Шеф-повар</div>
+      <h3 class="concept-stat-name">Любовь Плаксина</h3>
+      <p>Шеф «Радиуса» и ресторана Marinara. Подбирает локальные продукты для ужинов в радиусе 45 км от Родного.</p>
     </div>
     <div class="concept-bottom-img">
       <img src="img/luba.webp" alt="Шеф-повар Любовь Плаксина">
@@ -1428,33 +1432,37 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
   </div>
   <div class="phil-editorial">
     <div class="phil-col">
-      <div class="phil-photo">
-        <img src="img/wineyard2.webp" alt="Ужин на винограднике">
-      </div>
       <div class="phil-item">
         <div class="phil-num">01</div>
-        <h3>Стол на винограднике, а не при нём</h3>
-        <p>Поп-ап ресторан в Крыму, который работает буквально между рядов лоз — физическая близость к источнику вина.</p>
+        <h3>Природа не для вида</h3>
+        <p>Ужин прямо на винограднике — среди лоз сиры, мурведра, гренаша, санджовезе. В лучах заката, под пение птиц и стрекот цикад.</p>
       </div>
       <div class="phil-item">
         <div class="phil-num">03</div>
-        <h3>Терруар — это земля</h3>
-        <p>Гость пьёт вино на той земле, откуда оно происходит. За столом звучат истории о земле, которую гости видят вокруг, своими собственными глазами.</p>
+        <h3>Локальные продукты</h3>
+        <p>Вино и еда здесь не просто встречаются друг с другом. Они вырастают на одной земле. На той же, где проходит и ужин.</p>
+      </div>
+      <div class="phil-item">
+        <div class="phil-num">05</div>
+        <h3>Разговор с виноделом</h3>
+        <p>За столом мы разговариваем. О вине, еде, их сочетаниях. О жизни. Послушайте историю семьи и задайте вопросы виноделу.</p>
       </div>
     </div>
     <div class="phil-col">
       <div class="phil-item">
         <div class="phil-num">02</div>
-        <h3>Природа как шеф-повар и режиссёр</h3>
-        <p>Свет заката, аромат можжевельников, стрекот цикад — всё это не фон, а часть сценария.</p>
-      </div>
-      <div class="phil-photo">
-        <img src="img/food5.webp" alt="Блюдо от шеф-повара">
+        <h3>Формат не для всех</h3>
+        <p>В Радиус не попасть с улицы. Только по предварительному бронированию. Только сет-меню. Только 15 гостей.</p>
       </div>
       <div class="phil-item">
         <div class="phil-num">04</div>
-        <h3>Сезон, а не меню</h3>
-        <p>Блюда и вина меняются вместе с виноградником: ранняя весна, сбор, молодое вино — разный опыт в разное время.</p>
+        <h3>Хватаем звёзды</h3>
+        <p>За кухню отвечает Любовь Плаксина, шеф-повар ресторана Marinara, восходящая звезда гастрономической сцены Крыма.</p>
+      </div>
+      <div class="phil-item">
+        <div class="phil-num">06</div>
+        <h3>В гостях у семьи</h3>
+        <p>Радиус — не про «ресторанное обслуживание». Здесь вы в гостях у семьи Бельмас. Вино и еда — то, чем мы хотим делиться с гостями.</p>
       </div>
     </div>
   </div>
@@ -1463,17 +1471,17 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
 <!-- ═══ GALLERY ═══ -->
 <section class="gallery" id="gallery">
   <div class="gallery-mosaic">
-    <div class="gallery-tile wide"><img src="img/wineyard.webp" alt="Виноградники"></div>
-    <div class="gallery-tile"><img src="img/wineyard2.webp" alt="Винодельня"></div>
-    <div class="gallery-tile"><img src="img/landview2.webp" alt="Пейзаж"></div>
-    <div class="gallery-tile wide"><img src="img/hero.webp" alt="Территория"></div>
+    <div class="gallery-tile wide"><img src="img/wineyard3.webp" alt="Виноградники"></div>
+    <div class="gallery-tile"><img src="img/food4.webp" alt="Гастрономия"></div>
+    <div class="gallery-tile"><img src="img/landview23.webp" alt="Пейзаж"></div>
+    <div class="gallery-tile wide"><img src="img/wine.png" alt="Атмосфера"></div>
   </div>
 </section>
 
 <!-- ═══ FORMATS COMPARISON ═══ -->
 <section class="formats" id="formats">
   <div class="container">
-    <div class="section-tag">04 — Форматы</div>
+    <div class="section-tag">03 — Форматы</div>
     <h2 class="section-title">Мы предлагаем два<br>уровня <em>погружения</em></h2>
     <div class="formats-grid">
 
@@ -1518,7 +1526,7 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
 <section class="booking" id="booking">
     <div class="booking-inner">
       <div class="booking-info">
-        <div class="section-tag">05 — Бронирование</div>
+        <div class="section-tag">04 — Бронирование</div>
         <h2 class="section-title">Только по<br><em>предварительной</em> записи</h2>
         <p style="font-size:18px;color:#555;line-height:1.7;margin-bottom:16px;">«Радиус» — это место, где вкус становится языком семьи, а каждый гость — её частью.</p>
         <p style="font-size:15px;color:#777;line-height:1.6;margin-bottom:32px;">Чтобы ваше посещение было комфортнее, мы можем предложить вам трансфер наших партнёров.</p>
@@ -1531,7 +1539,7 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
           </div>
           <div class="booking-detail">
             <span class="label">Форматы</span>
-            <span class="value">Гастроужин «7 чувств» / Бранч с дегустацией</span>
+            <span class="value">Гастроужин на винограднике / Бранч с дегустацией</span>
           </div>
           <div class="booking-detail">
             <span class="label">Длительность</span>
@@ -1539,12 +1547,12 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
           </div>
           <div class="booking-detail">
             <span class="label">Контакт</span>
-            <span class="value">hello@belmaswinery.ru</span>
+            <span class="value">+7 978 716 50 16 Ксения</span>
           </div>
         </div>
       </div>
       <div class="booking-visual">
-        <img src="img/landview23.webp" alt="Вид на территорию винодельни">
+        <img src="img/landview2.webp" alt="Вид на территорию винодельни">
       </div>
     </div>
 </section>
@@ -1624,7 +1632,7 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
           <path d="M156.34,60.76c-.71-.44-1.44-.89-2.17-1.35,3.81-3.86,7.33-7.97,10.53-12.32s6.02-9,8.43-13.93c2.41-4.92,4.22-9.98,5.44-15.15,1.19,0,2.36.02,3.51.05,1.14.03,2,.08,2.56.14-1.4,5.55-3.42,10.96-6.05,16.21-2.63,5.25-5.65,10.19-9.05,14.81-3.41,4.62-7.09,8.92-11.05,12.91-.46-.31-1.17-.77-2.14-1.35ZM161.74,45.37c-.59-2.32-1.14-4.55-1.67-6.71-1.11-4.53-2.07-8.61-2.89-12.25-.82-3.64-1.41-6.44-1.79-8.41.94,0,1.95.01,3.03.03,1.08.02,2.04.07,2.88.16.21.94.36,1.65.46,2.11.09.46.24,1.15.42,2.07.59,2.83,1.31,6.31,2.17,10.45.86,4.14,1.84,8.9,2.96,14.29l-3.74,5.41c-.63-2.45-1.24-4.84-1.82-7.15Z"/>
           <path d="M190.75,48.42c-1.58-.81-2.84-2.06-3.76-3.77-.92-1.71-1.38-3.87-1.38-6.49,0-3.21.75-6.44,2.25-9.71,1.5-3.27,3.59-5.98,6.29-8.13,2.69-2.15,5.75-3.22,9.16-3.22,1.4,0,2.9.21,4.48.63,1.58.42,3.2,1.09,4.86,2.01l-2.14,10.12c-.34.08-.69.14-1.07.16-.71.06-1.46.08-2.23.06-.78-.02-1.41-.09-1.92-.22l1.89-7.07c-.65-.21-1.31-.36-1.98-.46-.67-.09-1.38-.14-2.14-.14-2.26,0-4.31.81-6.13,2.44-1.82,1.62-3.24,3.66-4.26,6.1-1.02,2.44-1.52,4.79-1.52,7.06,0,1.68.28,3.03.85,4.06.57,1.03,1.33,1.76,2.28,2.19.95.43,2.06.64,3.32.64s2.59-.24,3.95-.72c1.35-.48,2.64-1.09,3.87-1.84,1.23-.74,2.33-1.52,3.32-2.34l2.58,3.36c-2.12,1.99-4.54,3.57-7.26,4.75-2.73,1.17-5.36,1.76-7.89,1.76-2.01,0-3.81-.4-5.39-1.21Z"/>
         </svg>
-        <p>Ресторан «Радиус» при винодельне Belmas. Изысканная гастрономия из фермерских продуктов в радиусе 45 км.</p>
+        <p>Сезонный поп-ап ресторан на винограднике Belmas Winery. Камерные дегустации и гастроужины. Только по предварительному бронированию.</p>
       </div>
       <div class="footer-col">
         <h4>Навигация</h4>
@@ -1636,13 +1644,13 @@ footer p { font-size: 14px; font-weight: 300; line-height: 1.7; max-width: 360px
       <div class="footer-col">
         <h4>Контакты</h4>
         <a href="https://belmaswinery.com">belmaswinery.com</a>
-        <a href="mailto:hello@belmaswinery.ru">hello@belmaswinery.ru</a>
+        <a href="tel:+79787165016">+7 978 716 50 16 Ксения</a>
         <a href="https://yandex.ru/maps/?pt=33.739967,44.553909&z=15&l=map" target="_blank" rel="noopener">Россия, Крым, Севастополь</a>
         <a href="https://yandex.ru/maps/?pt=33.739967,44.553909&z=15&l=map" target="_blank" rel="noopener">село Родное →</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 ООО «Терруар» · ОГРН 1159204007533 · ИНН 9204549525</span>
+      <span>© 2026 ИП Акиниязов Рустам Керимович · ИНН 770403571000</span>
       <span>Сделано в <a href="http://redobureau.ru/" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;text-underline-offset:3px">Редо Бюро</a></span>
     </div>
 </footer>
@@ -1714,7 +1722,7 @@ function selectBookingFormat(type) {
   document.getElementById('bk-step-choose').style.display = 'none';
   document.getElementById('bk-step-form').classList.add('is-active');
 
-  var label = type === 'dinner' ? 'Гастроужин «7 чувств»' : 'Бранч с дегустацией';
+  var label = type === 'dinner' ? 'Гастроужин на винограднике' : 'Бранч с дегустацией';
   document.getElementById('bk-chosen-label').textContent = label;
 
   document.getElementById('dinner-booking').style.display = type === 'dinner' ? '' : 'none';
@@ -1738,7 +1746,7 @@ document.addEventListener('keydown', function(e) {
 </script>
 
 <!-- Booking System -->
-<script src="/booking/public/form-snippets/booking.js"></script>
+<script src="/booking/public/form-snippets/booking.js?v=20260421"></script>
 <script>
   initBookingForm({ formSelector: '#dinner-booking', type: 'dinner', apiBase: '/booking/api' });
   initBookingForm({ formSelector: '#tasting-booking', type: 'tasting', apiBase: '/booking/api' });

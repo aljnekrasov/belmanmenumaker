@@ -78,6 +78,10 @@ $pageTitle = 'Бронирования';
 require __DIR__ . '/_layout_start.php';
 ?>
 
+<?php if (isset($_GET['deleted'])): ?>
+    <div class="alert alert-success">Бронирование #<?= (int)$_GET['deleted'] ?> удалено</div>
+<?php endif; ?>
+
 <form method="get" class="filters">
     <div class="form-group">
         <label>Статус</label>

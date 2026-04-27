@@ -239,6 +239,47 @@ class BookingService
     }
 
     /**
+     * Удалить бронь насовсем (админ). Если статус активный — возвращает места.
+     */
+    public function deleteBooking(int $bookingId): bool
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $stmt = $this->db->prepare(
+                'SELECT id, event_id, guests, status FROM bookings WHERE id = ? FOR UPDATE'
+            );
+            $stmt->execute([$bookingId]);
+            $booking = $stmt->fetch();
+
+            if (!$booking) {
+                $this->db->rollBack();
+                return false;
+            }
+
+            if (in_array($booking['status'], ['pending', 'confirmed', 'paid'], true)) {
+                $stmt = $this->db->prepare(
+                    'UPDATE events SET booked = GREATEST(0, booked - ?),
+                     status = IF(status = "sold_out", "active", status)
+                     WHERE id = ?'
+                );
+                $stmt->execute([$booking['guests'], $booking['event_id']]);
+            }
+
+            $stmt = $this->db->prepare('DELETE FROM bookings WHERE id = ?');
+            $stmt->execute([$bookingId]);
+
+            $this->db->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
      * Получить данные брони по ID
      */
     public function getBooking(int $id): ?array
