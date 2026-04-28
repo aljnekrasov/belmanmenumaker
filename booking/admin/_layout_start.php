@@ -250,6 +250,13 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
                 grid-template-columns: 1fr !important;
             }
 
+            /* Prevent iOS zoom on input focus (font-size must be ≥16px) */
+            .form-group input,
+            .form-group select,
+            .form-group textarea,
+            .filters input,
+            .filters select { font-size: 16px !important; }
+
             /* Action button rows wrap */
             .actions, .form-actions { flex-wrap: wrap; }
             .card { padding: 18px 16px; }
