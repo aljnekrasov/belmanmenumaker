@@ -219,16 +219,22 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
             .sidebar {
+                width: min(280px, 80vw);
                 transform: translateX(-100%);
                 transition: transform .25s ease;
                 box-shadow: 2px 0 16px rgba(0,0,0,.2);
             }
+            .sidebar-nav a { padding: 14px 20px; font-size: 16px; }
             body.menu-open .sidebar { transform: translateX(0); }
             body.menu-open .sidebar-backdrop { display: block; }
             .main { margin-left: 0; padding: 70px 16px 24px; }
             .main h1 { font-size: 19px; margin-bottom: 18px; }
 
-            /* Tables scroll horizontally */
+            /* Bigger touch targets for buttons */
+            .btn { padding: 11px 20px; font-size: 15px; min-height: 44px; }
+            .btn-sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
+
+            /* Tables scroll horizontally + tighter cells */
             .data-table {
                 display: block;
                 overflow-x: auto;
@@ -236,6 +242,7 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
                 white-space: nowrap;
             }
             .data-table thead, .data-table tbody { display: table; width: 100%; }
+            .data-table th, .data-table td { padding: 8px 10px; font-size: 13px; }
 
             /* Filter inputs stack */
             .filters { padding: 14px; gap: 10px; }
@@ -245,8 +252,9 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
             .filters textarea { min-width: 0 !important; width: 100% !important; }
             .filters .btn { width: 100%; }
 
-            /* Inline grids collapse to 1 column */
-            div[style*="grid-template-columns"] {
+            /* Static-column inline grids collapse to 1 column;
+               auto-fit grids (dashboard cards) keep responsive behaviour */
+            div[style*="grid-template-columns:1fr"] {
                 grid-template-columns: 1fr !important;
             }
 
