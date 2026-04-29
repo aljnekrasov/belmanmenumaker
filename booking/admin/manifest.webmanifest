@@ -1,0 +1,20 @@
+{
+  "name": "Бельмас — Админ-панель",
+  "short_name": "Бельмас Админ",
+  "description": "Панель управления бронированиями и событиями Belmas Winery",
+  "start_url": "/booking/admin/dashboard.php",
+  "scope": "/booking/admin/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#2F4A3F",
+  "theme_color": "#2F4A3F",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/booking/admin/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

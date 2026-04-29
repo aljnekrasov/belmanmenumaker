@@ -15,3 +15,9 @@ RedirectMatch 403 ^/booking/cron/
 RedirectMatch 403 ^/booking/migrations/(?!setup\.php)
 RedirectMatch 403 ^/booking/logs/
 RedirectMatch 403 ^/booking/templates/
+
+# PWA manifest MIME type
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+</IfModule>
+

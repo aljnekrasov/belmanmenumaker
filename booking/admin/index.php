@@ -38,6 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход — Бельмас Админ</title>
+    <link rel="manifest" href="/booking/admin/manifest.webmanifest">
+    <meta name="theme-color" content="#2F4A3F">
+    <link rel="icon" type="image/svg+xml" href="/booking/admin/icon.svg">
+    <link rel="apple-touch-icon" href="/booking/admin/icon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Бельмас">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=PT+Mono&display=swap" rel="stylesheet">
     <style>
