@@ -71,36 +71,35 @@ require __DIR__ . '/_layout_start.php';
 <?php if (empty($upcomingEvents)): ?>
     <p style="color:#888;">Нет предстоящих событий.</p>
 <?php else: ?>
-    <table style="width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+    <table class="data-table">
         <thead>
-            <tr style="background:var(--green); color:var(--cream);">
-                <th style="padding:10px 14px; text-align:left; font-size:13px;">Дата</th>
-                <th style="padding:10px 14px; text-align:left; font-size:13px;">Время</th>
-                <th style="padding:10px 14px; text-align:left; font-size:13px;">Тип</th>
-                <th style="padding:10px 14px; text-align:left; font-size:13px;">Название</th>
-                <th style="padding:10px 14px; text-align:center; font-size:13px;">Места</th>
-                <th style="padding:10px 14px; text-align:left; font-size:13px;">Статус</th>
+            <tr>
+                <th>Дата</th>
+                <th>Время</th>
+                <th>Тип</th>
+                <th>Название</th>
+                <th style="text-align:center;">Места</th>
+                <th>Статус</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($upcomingEvents as $i => $ev): ?>
+            <?php foreach ($upcomingEvents as $ev): ?>
                 <?php
                     $typeName = $ev['type'] === 'dinner' ? 'Ужин' : 'Дегустация';
                     $statusMap = ['active' => 'Активно', 'closed' => 'Закрыто', 'sold_out' => 'Распродано'];
                     $statusLabel = $statusMap[$ev['status']] ?? $ev['status'];
-                    $bgColor = $i % 2 === 0 ? '#fff' : '#faf9f6';
                 ?>
-                <tr style="background:<?= $bgColor ?>; border-bottom:1px solid #eee;">
-                    <td style="padding:10px 14px; font-size:14px;"><?= htmlspecialchars($ev['event_date']) ?></td>
-                    <td style="padding:10px 14px; font-size:14px;"><?= htmlspecialchars(substr($ev['event_time'], 0, 5)) ?></td>
-                    <td style="padding:10px 14px; font-size:14px;"><?= $typeName ?></td>
-                    <td style="padding:10px 14px; font-size:14px;">
+                <tr>
+                    <td><?= htmlspecialchars($ev['event_date']) ?></td>
+                    <td><?= htmlspecialchars(substr($ev['event_time'], 0, 5)) ?></td>
+                    <td><?= $typeName ?></td>
+                    <td>
                         <a href="event-edit.php?id=<?= (int)$ev['id'] ?>" style="color:var(--green); text-decoration:underline;">
                             <?= htmlspecialchars($ev['title']) ?>
                         </a>
                     </td>
-                    <td style="padding:10px 14px; font-size:14px; text-align:center;"><?= (int)$ev['booked'] ?>/<?= (int)$ev['capacity'] ?></td>
-                    <td style="padding:10px 14px; font-size:14px;"><?= $statusLabel ?></td>
+                    <td style="text-align:center;"><?= (int)$ev['booked'] ?>/<?= (int)$ev['capacity'] ?></td>
+                    <td><?= $statusLabel ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

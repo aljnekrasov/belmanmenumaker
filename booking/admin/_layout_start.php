@@ -216,13 +216,128 @@ $_adminName = htmlspecialchars($_SESSION['admin_name'] ?? 'Админ');
             margin-bottom: 24px;
         }
 
+        /* Mobile top nav */
+        .topbar { display: none; }
+
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            .main { margin-left: 0; padding: 20px 16px; }
+            .main { margin-left: 0; padding: 16px 14px; }
+
+            .topbar {
+                display: block;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: var(--green);
+                color: var(--cream);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            .topbar-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+            }
+            .topbar-brand {
+                font-size: 16px;
+                font-weight: 700;
+            }
+            .topbar-brand small {
+                color: var(--gold);
+                font-family: 'PT Mono', monospace;
+                font-size: 10px;
+                margin-left: 6px;
+                font-weight: 400;
+            }
+            .topbar-user {
+                font-size: 12px;
+                color: rgba(255,255,255,0.85);
+            }
+            .topbar-user a {
+                color: var(--gold);
+                text-decoration: none;
+                margin-left: 10px;
+            }
+            .topbar-nav {
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .topbar-nav::-webkit-scrollbar { display: none; }
+            .topbar-nav a {
+                flex-shrink: 0;
+                padding: 11px 16px;
+                color: rgba(255,255,255,0.7);
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 700;
+                white-space: nowrap;
+                border-bottom: 2px solid transparent;
+                transition: color 0.15s, border-color 0.15s;
+            }
+            .topbar-nav a.active {
+                color: #fff;
+                border-bottom-color: var(--gold);
+            }
+
+            /* Глобально убираем горизонтальную прокрутку страницы на мобилке */
+            html, body { overflow-x: hidden; max-width: 100vw; }
+            .main { max-width: 100vw; overflow-x: hidden; }
+
+            .main h1 { font-size: 19px; margin-bottom: 16px; }
+
+            /* Скроллим только саму таблицу, если не влезает */
+            .table-wrap {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                background: #fff;
+                margin-bottom: 12px;
+            }
+            .table-wrap .data-table {
+                box-shadow: none;
+                border-radius: 0;
+                margin: 0;
+                min-width: max-content;
+            }
+
+            .data-table { font-size: 13px; }
+            .data-table th, .data-table td { padding: 8px 10px; white-space: nowrap; }
+            .card { padding: 16px; max-width: 100%; }
+            .filters { max-width: 100%; }
+
+            /* Статусы в таблицах — только цветной кружок без текста */
+            .data-table td .badge {
+                font-size: 0;
+                padding: 0;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                vertical-align: middle;
+                line-height: 0;
+            }
         }
     </style>
 </head>
 <body>
+
+<header class="topbar">
+    <div class="topbar-head">
+        <div class="topbar-brand">Бельмас<small>Админ</small></div>
+        <div class="topbar-user"><?= $_adminName ?> · <a href="logout.php">выйти</a></div>
+    </div>
+    <nav class="topbar-nav">
+        <a href="dashboard.php" class="<?= $_currentPage === 'dashboard.php' ? 'active' : '' ?>">Дашборд</a>
+        <a href="events.php" class="<?= in_array($_currentPage, ['events.php','event-edit.php','event-delete.php'], true) ? 'active' : '' ?>">События</a>
+        <a href="event-edit.php" class="<?= $_currentPage === 'event-edit.php' && empty($_GET['id']) ? 'active' : '' ?>">+ Новое</a>
+        <a href="bookings.php" class="<?= in_array($_currentPage, ['bookings.php','booking-view.php'], true) ? 'active' : '' ?>">Брони</a>
+    </nav>
+</header>
 
 <aside class="sidebar">
     <div class="sidebar-brand">
